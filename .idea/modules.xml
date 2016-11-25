@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/ModularizationArchitecture.iml" filepath="$PROJECT_DIR$/ModularizationArchitecture.iml" />
+      <module fileurl="file://$PROJECT_DIR$/macore/macore.iml" filepath="$PROJECT_DIR$/macore/macore.iml" />
+    </modules>
+  </component>
+</project>
