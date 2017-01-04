@@ -1,1 +1,1 @@
-include ':macore'
+include ':macore', ':musicdemo', ':maindemo', ':picdemo'

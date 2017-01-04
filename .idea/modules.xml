@@ -4,6 +4,9 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ModularizationArchitecture.iml" filepath="$PROJECT_DIR$/ModularizationArchitecture.iml" />
       <module fileurl="file://$PROJECT_DIR$/macore/macore.iml" filepath="$PROJECT_DIR$/macore/macore.iml" />
+      <module fileurl="file://$PROJECT_DIR$/maindemo/maindemo.iml" filepath="$PROJECT_DIR$/maindemo/maindemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/musicdemo/musicdemo.iml" filepath="$PROJECT_DIR$/musicdemo/musicdemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/picdemo/picdemo.iml" filepath="$PROJECT_DIR$/picdemo/picdemo.iml" />
     </modules>
   </component>
 </project>

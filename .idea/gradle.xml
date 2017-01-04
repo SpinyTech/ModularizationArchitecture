@@ -9,6 +9,9 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/macore" />
+            <option value="$PROJECT_DIR$/maindemo" />
+            <option value="$PROJECT_DIR$/musicdemo" />
+            <option value="$PROJECT_DIR$/picdemo" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
