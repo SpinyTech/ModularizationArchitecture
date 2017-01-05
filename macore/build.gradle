@@ -30,3 +30,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.+'
     compile 'com.google.code.gson:gson:2.8.+'
 }
+
+apply from: "bintray.gradle"
