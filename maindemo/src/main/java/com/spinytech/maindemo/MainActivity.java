@@ -194,7 +194,12 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
+        findViewById(R.id.main_wide_shutdown_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LocalRouter.getInstance((MaApplication) getApplication()).stopWideRouter();
+            }
+        });
         findViewById(R.id.main_pic_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

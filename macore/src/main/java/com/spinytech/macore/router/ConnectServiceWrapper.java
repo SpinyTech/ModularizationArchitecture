@@ -5,11 +5,9 @@ package com.spinytech.macore.router;
  */
 
 public class ConnectServiceWrapper {
-    public boolean needAutoConnect = false;
     public Class<? extends LocalRouterConnectService> targetClass = null;
 
-    public ConnectServiceWrapper(boolean needAutoConnect, Class<? extends LocalRouterConnectService> logicClass) {
-        this.needAutoConnect = needAutoConnect;
+    public ConnectServiceWrapper( Class<? extends LocalRouterConnectService> logicClass) {
         this.targetClass = logicClass;
     }
 }

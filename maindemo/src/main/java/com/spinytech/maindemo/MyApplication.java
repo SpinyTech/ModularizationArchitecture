@@ -14,9 +14,9 @@ import com.spinytech.picdemo.PicRouterConnectService;
 public class MyApplication extends MaApplication {
     @Override
     public void initializeAllProcessRouter() {
-        WideRouter.registerLocalRouter("com.spinytech.maindemo",MainRouterConnectService.class,false);
-        WideRouter.registerLocalRouter("com.spinytech.maindemo:music",MusicRouterConnectService.class,false);
-        WideRouter.registerLocalRouter("com.spinytech.maindemo:pic",PicRouterConnectService.class,false);
+        WideRouter.registerLocalRouter("com.spinytech.maindemo",MainRouterConnectService.class);
+        WideRouter.registerLocalRouter("com.spinytech.maindemo:music",MusicRouterConnectService.class);
+        WideRouter.registerLocalRouter("com.spinytech.maindemo:pic",PicRouterConnectService.class);
     }
 
     @Override

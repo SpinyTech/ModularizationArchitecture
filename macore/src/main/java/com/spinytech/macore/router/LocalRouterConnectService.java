@@ -33,9 +33,9 @@ public class LocalRouterConnectService extends Service {
         public boolean checkResponseAsync(String routerRequest) throws RemoteException {
             return LocalRouter.getInstance((MaApplication) getApplication()).
                     answerWiderAsync(new RouterRequest
-                    .Builder(getApplicationContext())
-                    .requestString(routerRequest)
-                    .build());
+                            .Builder(getApplicationContext())
+                            .json(routerRequest)
+                            .build());
         }
 
         @Override
@@ -43,15 +43,23 @@ public class LocalRouterConnectService extends Service {
             try {
                 return LocalRouter
                         .getInstance((MaApplication) getApplication())
-                        .route(LocalRouterConnectService.this,new RouterRequest
+                        .route(LocalRouterConnectService.this, new RouterRequest
                                 .Builder(getApplicationContext())
-                                .requestString(routerRequest)
+                                .json(routerRequest)
                                 .build())
                         .get();
             } catch (Exception e) {
                 e.printStackTrace();
                 return new MaActionResult.Builder().msg(e.getMessage()).build().toString();
             }
+        }
+
+        @Override
+        public boolean stopWideRouter() throws RemoteException {
+            LocalRouter
+                    .getInstance((MaApplication) getApplication())
+                    .disconnectWideRouter();
+            return true;
         }
     };
 }

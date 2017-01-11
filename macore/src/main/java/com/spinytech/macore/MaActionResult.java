@@ -14,9 +14,11 @@ public class MaActionResult {
     public static final int CODE_NOT_FOUND = 0X0002;
     public static final int CODE_INVALID = 0X0003;
     public static final int CODE_ROUTER_NOT_REGISTER = 0X0004;
-    public static final int CODE_CANNOT_BIND_TARGET = 0X0005;
-    public static final int CODE_REMOTE_EXCEPTION = 0X0005;
-    public static final int CODE_CANNOT_BIND_WIDE = 0X0005;
+    public static final int CODE_CANNOT_BIND_LOCAL = 0X0005;
+    public static final int CODE_REMOTE_EXCEPTION = 0X0006;
+    public static final int CODE_CANNOT_BIND_WIDE = 0X0007;
+    public static final int CODE_TARGET_IS_WIDE = 0X0008;
+    public static final int CODE_WIDE_STOPPING = 0X0009;
 
     private int code;
     private String msg;

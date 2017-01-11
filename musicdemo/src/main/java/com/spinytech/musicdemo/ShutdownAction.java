@@ -30,7 +30,7 @@ public class ShutdownAction extends MaAction {
                 .object(null)
                 .build();
         context.getApplicationContext().stopService(new Intent(context,MusicService.class));
-        LocalRouter.getInstance((MaApplication)context.getApplicationContext()).shutdownSelf(MusicRouterConnectService.class);
+        LocalRouter.getInstance((MaApplication)context.getApplicationContext()).stopSelf(MusicRouterConnectService.class);
         new Thread(new Runnable() {
             @Override
             public void run() {

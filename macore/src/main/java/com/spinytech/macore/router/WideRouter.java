@@ -8,15 +8,17 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.spinytech.macore.ErrorAction;
 import com.spinytech.macore.ILocalRouterAIDL;
 import com.spinytech.macore.MaActionResult;
 import com.spinytech.macore.MaApplication;
+import com.spinytech.macore.tools.Logger;
 import com.spinytech.macore.tools.ProcessUtil;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static android.content.Context.BIND_AUTO_CREATE;
 
@@ -32,7 +34,7 @@ public class WideRouter {
     private MaApplication mApplication;
     private HashMap<String, ServiceConnection> mLocalRouterConnectionMap;
     private HashMap<String, ILocalRouterAIDL> mLocalRouterAIDLMap;
-
+    boolean mIsStopping = false;
 
     private WideRouter(MaApplication context) {
         mApplication = context;
@@ -52,15 +54,24 @@ public class WideRouter {
         return sInstance;
     }
 
-    public static void registerLocalRouter(String processName, Class<? extends LocalRouterConnectService> targetClass, boolean needAutoConnect) {
+    public static void registerLocalRouter(String processName, Class<? extends LocalRouterConnectService> targetClass) {
         if (null == sLocalRouterClasses) {
             sLocalRouterClasses = new HashMap<>();
         }
-        ConnectServiceWrapper connectServiceWrapper = new ConnectServiceWrapper(needAutoConnect, targetClass);
+        ConnectServiceWrapper connectServiceWrapper = new ConnectServiceWrapper(targetClass);
         sLocalRouterClasses.put(processName, connectServiceWrapper);
     }
 
-    protected boolean connectLocalRouter(final String domain) {
+    boolean checkLocalRouterHasRegistered(final String domain){
+        Class<? extends LocalRouterConnectService> clazz = sLocalRouterClasses.get(domain).targetClass;
+        if (null == clazz) {
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    boolean connectLocalRouter(final String domain) {
         Class<? extends LocalRouterConnectService> clazz = sLocalRouterClasses.get(domain).targetClass;
         if (null == clazz) {
             return false;
@@ -89,6 +100,55 @@ public class WideRouter {
         return true;
     }
 
+    boolean disconnectLocalRouter(String domain) {
+        if (TextUtils.isEmpty(domain)) {
+            return false;
+        } else if (PROCESS_NAME.equals(domain)) {
+            stopSelf();
+            return true;
+        } else if (null == mLocalRouterConnectionMap.get(domain)) {
+            return false;
+        } else {
+            mApplication.unbindService(mLocalRouterConnectionMap.get(domain));
+            mLocalRouterAIDLMap.remove(domain);
+            mLocalRouterConnectionMap.remove(domain);
+            return true;
+        }
+    }
+
+    /**
+     */
+    void stopSelf() {
+        mIsStopping = true;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<String> locals = new ArrayList<>();
+                locals.addAll(mLocalRouterAIDLMap.keySet());
+                for (String domain : locals) {
+                    ILocalRouterAIDL aidl = mLocalRouterAIDLMap.get(domain);
+                    if (null != aidl) {
+                        try {
+                            aidl.stopWideRouter();
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                        disconnectLocalRouter(domain);
+                    }
+                }
+                try {
+                    Thread.sleep(1000);
+                    mApplication.stopService(new Intent(mApplication, WideRouterConnectService.class));
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.exit(0);
+            }
+        }).start();
+    }
+
+    @Deprecated
     boolean answerLocalAsync(@NonNull RouterRequest routerRequest) {
         ILocalRouterAIDL target = mLocalRouterAIDLMap.get(routerRequest.getDomain());
         if (target == null) {
@@ -109,10 +169,21 @@ public class WideRouter {
     }
 
     public RouterResponse route(RouterRequest routerRequest) {
-        Log.e(TAG, PROCESS_NAME + ", start: " + System.currentTimeMillis() + "\n" + routerRequest.toString());
+        Logger.d(TAG, "Process:" + PROCESS_NAME + "\nWide route start: " + System.currentTimeMillis() + "\nRequest:" + routerRequest.toString());
         RouterResponse routerResponse = new RouterResponse();
+        if (mIsStopping) {
+            ErrorAction defaultNotFoundAction = new ErrorAction(true, MaActionResult.CODE_WIDE_STOPPING, "Wide router is stopping.");
+            MaActionResult result = defaultNotFoundAction.invoke(mApplication, routerRequest.getData());
+            routerResponse.mIsAsync = true;
+            routerResponse.mResultString = result.toString();
+            return routerResponse;
+        }
         if (PROCESS_NAME.equals(routerRequest.getDomain())) {
-
+            ErrorAction defaultNotFoundAction = new ErrorAction(true, MaActionResult.CODE_TARGET_IS_WIDE, "Domain can not be " + PROCESS_NAME + ".");
+            MaActionResult result = defaultNotFoundAction.invoke(mApplication, routerRequest.getData());
+            routerResponse.mIsAsync = true;
+            routerResponse.mResultString = result.toString();
+            return routerResponse;
         }
         ILocalRouterAIDL target = mLocalRouterAIDLMap.get(routerRequest.getDomain());
         if (null == target) {
@@ -121,11 +192,11 @@ public class WideRouter {
                 MaActionResult result = defaultNotFoundAction.invoke(mApplication, routerRequest.getData());
                 routerResponse.mIsAsync = false;
                 routerResponse.mResultString = result.toString();
-                Log.e(TAG, PROCESS_NAME + ", no register end: " + System.currentTimeMillis() + "\n" + routerRequest.toString());
+                Logger.d(TAG, "Process:" + PROCESS_NAME + "\nLocal not register end: " + System.currentTimeMillis() + "\nRequest:" + routerRequest.toString());
                 return routerResponse;
             } else {
                 // Wait to bind the target process connect service, timeout is 30s.
-                Log.e(TAG, PROCESS_NAME + ", bind start: " + System.currentTimeMillis() + "\n" + routerRequest.toString());
+                Logger.d(TAG, "Process:" + PROCESS_NAME + "\nBind local router start: " + System.currentTimeMillis() + "\nRequest:" + routerRequest.toString());
                 int time = 0;
                 while (true) {
                     target = mLocalRouterAIDLMap.get(routerRequest.getDomain());
@@ -137,15 +208,14 @@ public class WideRouter {
                         }
                         time++;
                     } else {
-                        Log.e(TAG, PROCESS_NAME + ", bind end: " + System.currentTimeMillis() + "\n" + routerRequest.toString());
+                        Logger.d(TAG, "Process:" + PROCESS_NAME + "\nBind local router end: " + System.currentTimeMillis() + "\nRequest:" + routerRequest.toString());
                         break;
                     }
                     if (time >= 600) {
-                        ErrorAction defaultNotFoundAction = new ErrorAction(true, MaActionResult.CODE_CANNOT_BIND_TARGET, "Can not bind " + routerRequest.getDomain());
+                        ErrorAction defaultNotFoundAction = new ErrorAction(true, MaActionResult.CODE_CANNOT_BIND_LOCAL, "Can not bind " + routerRequest.getDomain());
                         MaActionResult result = defaultNotFoundAction.invoke(mApplication, routerRequest.getData());
                         routerResponse.mIsAsync = true;
                         routerResponse.mResultString = result.toString();
-                        Log.e(TAG, PROCESS_NAME + ", time out end: " + System.currentTimeMillis() + "\n" + routerRequest.toString());
                         return routerResponse;
                     }
                 }
@@ -153,36 +223,19 @@ public class WideRouter {
         }
         try {
             String resultString = target.route(routerRequest.toString());
-            routerResponse.mIsAsync = target.checkResponseAsync(routerRequest.toString());
+            routerResponse.mIsAsync = true;
             routerResponse.mResultString = resultString;
-            Log.e(TAG, PROCESS_NAME + ", end: " + System.currentTimeMillis() + "\n" + routerRequest.toString());
+            Logger.d(TAG, "Process:" + PROCESS_NAME + "\nWide route end: " + System.currentTimeMillis() + "\nRequest:" + routerRequest.toString());
         } catch (RemoteException e) {
             e.printStackTrace();
             ErrorAction defaultNotFoundAction = new ErrorAction(true, MaActionResult.CODE_REMOTE_EXCEPTION, e.getMessage());
             MaActionResult result = defaultNotFoundAction.invoke(mApplication, routerRequest.getData());
             routerResponse.mIsAsync = true;
             routerResponse.mResultString = result.toString();
-            Log.e(TAG, PROCESS_NAME + ", error end: " + System.currentTimeMillis() + "\n" + routerRequest.toString());
             return routerResponse;
 
         }
         return routerResponse;
     }
 
-    boolean shutdownRouter(String domain) {
-        if (TextUtils.isEmpty(domain)) {
-            return false;
-        }
-        else if (PROCESS_NAME.equals(domain)) {
-            //TODO
-            return false;
-        } else if (null == mLocalRouterConnectionMap.get(domain)) {
-            return false;
-        } else {
-            mApplication.unbindService(mLocalRouterConnectionMap.get(domain));
-            mLocalRouterAIDLMap.remove(domain);
-            mLocalRouterConnectionMap.remove(domain);
-            return true;
-        }
-    }
 }

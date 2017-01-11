@@ -4,7 +4,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
@@ -16,6 +15,7 @@ import com.spinytech.macore.MaAction;
 import com.spinytech.macore.MaActionResult;
 import com.spinytech.macore.MaApplication;
 import com.spinytech.macore.MaProvider;
+import com.spinytech.macore.tools.Logger;
 import com.spinytech.macore.tools.ProcessUtil;
 
 import java.util.HashMap;
@@ -26,7 +26,7 @@ import java.util.concurrent.Executors;
 import static android.content.Context.BIND_AUTO_CREATE;
 
 /**
- * Created by wanglei on 2016/11/29.
+ * The Local Router
  */
 
 public class LocalRouter {
@@ -40,6 +40,7 @@ public class LocalRouter {
     private ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
+            Log.e(TAG,"SER"+service);
             mWideRouterAIDL = IWideRouterAIDL.Stub.asInterface(service);
         }
 
@@ -53,7 +54,7 @@ public class LocalRouter {
         mApplication = context;
         mProcessName = ProcessUtil.getProcessName(context, ProcessUtil.getMyProcessId());
         mProviders = new HashMap<>();
-        if (mApplication.needMultipleProcess()) {
+        if(mApplication.needMultipleProcess()&&!WideRouter.PROCESS_NAME.equals(mProcessName)){
             connectWideRouter();
         }
     }
@@ -74,16 +75,16 @@ public class LocalRouter {
 
     void connectWideRouter() {
         Intent binderIntent = new Intent(mApplication, WideRouterConnectService.class);
-        Bundle bundle = new Bundle();
-        binderIntent.putExtras(bundle);
+        binderIntent.putExtra("domain",mProcessName);
         mApplication.bindService(binderIntent, mServiceConnection, BIND_AUTO_CREATE);
     }
 
-    void disconnectWideRouter(){
-        Intent binderIntent = new Intent(mApplication, WideRouterConnectService.class);
-        Bundle bundle = new Bundle();
-        binderIntent.putExtras(bundle);
+    void disconnectWideRouter() {
+        if(null == mServiceConnection){
+            return;
+        }
         mApplication.unbindService(mServiceConnection);
+        mWideRouterAIDL = null;
     }
 
     public void registerProvider(String providerName, MaProvider provider) {
@@ -101,14 +102,14 @@ public class LocalRouter {
 
     boolean answerWiderAsync(@NonNull RouterRequest routerRequest) {
         if (mProcessName.equals(routerRequest.getDomain()) && checkWideRouterConnection()) {
-            return findRequestAction(routerRequest).isAsync(mApplication,routerRequest.getData());
+            return findRequestAction(routerRequest).isAsync(mApplication, routerRequest.getData());
         } else {
             return true;
         }
     }
 
     public RouterResponse route(Context context, @NonNull RouterRequest routerRequest) throws Exception {
-//        Log.e(TAG, mProcessName+", start: "+System.currentTimeMillis()+"\n"+routerRequest.toString());
+        Logger.d(TAG, "Process:" + mProcessName + "\nLocal route start: " + System.currentTimeMillis() + "\nRequest:" + routerRequest.toString());
         RouterResponse routerResponse = new RouterResponse();
         // Local request
         if (mProcessName.equals(routerRequest.getDomain())) {
@@ -119,7 +120,7 @@ public class LocalRouter {
                 MaActionResult result = targetAction.invoke(context, routerRequest.getData());
                 routerResponse.mResultString = result.toString();
                 routerResponse.mObject = result.getObject();
-//                Log.e(TAG, mProcessName+", local sync end: "+System.currentTimeMillis()+"\n"+routerRequest.toString());
+                Logger.d(TAG, "Process:" + mProcessName + "\nLocal sync end: " + System.currentTimeMillis() + "\nRequest:" + routerRequest.toString());
             }
             // Async result, use the thread pool to execute the task.
             else {
@@ -131,20 +132,15 @@ public class LocalRouter {
         }
         // IPC request
         else {
+            // Because AIDL always block about 100ms, so the wide routing is always asynchronous.
+            // And IWideRouterAIDL.checkResponseAsync now is deprecated.
+            routerResponse.mIsAsync = true;
             // Has connected with wide router
-            if (checkWideRouterConnection()) {
-                routerResponse.mIsAsync = mWideRouterAIDL.checkResponseAsync(routerRequest.toString());
-            }
-            // Has not connected with the wide router.
-            else {
-                ConnectWideTask task = new ConnectWideTask(routerResponse,routerRequest);
+            if (!checkWideRouterConnection()) {
+                ConnectWideTask task = new ConnectWideTask(routerResponse, routerRequest);
                 routerResponse.mAsyncResponse = getThreadPool().submit(task);
             }
-            if (!routerResponse.mIsAsync) {
-                routerResponse.mResultString = mWideRouterAIDL.route(routerRequest.toString());
-                Log.e(TAG, mProcessName+", wide sync end: "+System.currentTimeMillis()+"\n"+routerRequest.toString());
-            }
-            // Async result, use the thread pool to execute the task.
+            // Has not connected with the wide router.
             else {
                 WideTask task = new WideTask(routerRequest);
                 routerResponse.mAsyncResponse = getThreadPool().submit(task);
@@ -153,22 +149,34 @@ public class LocalRouter {
         return routerResponse;
     }
 
-    public boolean shutdownSelf(Class<? extends LocalRouterConnectService> clazz){
+    public boolean stopSelf(Class<? extends LocalRouterConnectService> clazz) {
         if (checkWideRouterConnection()) {
             try {
-                if(mWideRouterAIDL.shutdownRouter(mProcessName)){
-                    mApplication.unbindService(mServiceConnection);
+                if (mWideRouterAIDL.stopRouter(mProcessName)) {
+                    disconnectWideRouter();
                     return true;
-                }else{
+                } else {
                     return false;
                 }
             } catch (RemoteException e) {
                 e.printStackTrace();
                 return false;
             }
-        }else{
-            mApplication.stopService(new Intent(mApplication,clazz));
+        } else {
+            mApplication.stopService(new Intent(mApplication, clazz));
             return true;
+        }
+    }
+
+    public void stopWideRouter(){
+        if (checkWideRouterConnection()) {
+            try {
+                mWideRouterAIDL.stopRouter(WideRouter.PROCESS_NAME);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Logger.e(TAG,"This local router hasn't connected the wide router.");
         }
     }
 
@@ -204,7 +212,7 @@ public class LocalRouter {
         public String call() throws Exception {
             MaActionResult result = mAction.invoke(mContext, mRequest.getData());
             mResponse.mObject = result.getObject();
-            Log.e(TAG, mProcessName+", local async end: "+System.currentTimeMillis()+"\n"+mRequest.toString());
+            Logger.d(TAG, "Process:" + mProcessName + "\nLocal async end: " + System.currentTimeMillis() + "\nRequest:" + mRequest.toString());
             return result.toString();
         }
     }
@@ -219,7 +227,7 @@ public class LocalRouter {
         @Override
         public String call() throws Exception {
             String result = mWideRouterAIDL.route(mRequest.toString());
-            Log.e(TAG, mProcessName+", wide end: "+System.currentTimeMillis()+"\n"+mRequest.toString());
+            Logger.d(TAG, "Process:" + mProcessName + "\nWide async end: " + System.currentTimeMillis() + "\nRequest:" + mRequest.toString());
             return result;
         }
     }
@@ -227,16 +235,16 @@ public class LocalRouter {
     private class ConnectWideTask implements Callable<String> {
         private RouterRequest mRequest;
         private RouterResponse mResponse;
-        public ConnectWideTask(RouterResponse routerResponse,RouterRequest routerRequest) {
+
+        public ConnectWideTask(RouterResponse routerResponse, RouterRequest routerRequest) {
             this.mRequest = routerRequest;
             this.mResponse = routerResponse;
         }
 
         @Override
         public String call() throws Exception {
-            Log.e(TAG, mProcessName+", bind wide start: "+System.currentTimeMillis()+"\n"+mRequest.toString());
+            Logger.d(TAG, "Process:" + mProcessName + "\nBind wide router start: " + System.currentTimeMillis() + "\nRequest:" + mRequest.toString());
             connectWideRouter();
-            mResponse.mIsAsync = true;
             int time = 0;
             while (true) {
                 if (null == mWideRouterAIDL) {
@@ -250,16 +258,15 @@ public class LocalRouter {
                     break;
                 }
                 if (time >= 600) {
-                    ErrorAction defaultNotFoundAction = new ErrorAction(true, MaActionResult.CODE_CANNOT_BIND_WIDE, "Can not bind wide router.");
+                    ErrorAction defaultNotFoundAction = new ErrorAction(true, MaActionResult.CODE_CANNOT_BIND_WIDE, "Bind wide router time out. Can not bind wide router.");
                     MaActionResult result = defaultNotFoundAction.invoke(mApplication, mRequest.getData());
-                    mResponse.mIsAsync = true;
                     mResponse.mResultString = result.toString();
                     return result.toString();
                 }
             }
-            Log.e(TAG, mProcessName+", bind wide end: "+System.currentTimeMillis()+"\n"+mRequest.toString());
+            Logger.d(TAG, "Process:" + mProcessName + "\nBind wide router end: " + System.currentTimeMillis() + "\nRequest:" + mRequest.toString());
             String result = mWideRouterAIDL.route(mRequest.toString());
-            Log.e(TAG, mProcessName+", connect wide end: "+System.currentTimeMillis()+"\n"+mRequest.toString());
+            Logger.d(TAG, "Process:" + mProcessName + "\nWide async end: " + System.currentTimeMillis() + "\nRequest:" + mRequest.toString());
             return result;
         }
     }

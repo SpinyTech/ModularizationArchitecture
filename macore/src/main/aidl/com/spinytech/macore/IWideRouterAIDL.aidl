@@ -6,5 +6,5 @@ package com.spinytech.macore;
 interface IWideRouterAIDL {
     boolean checkResponseAsync(String routerRequset);
     String route(String routerRequest);
-    boolean shutdownRouter(String domain);
+    boolean stopRouter(String domain);
 }
