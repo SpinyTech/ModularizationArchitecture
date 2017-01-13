@@ -13,6 +13,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by wanglei on 2016/12/27.
@@ -73,7 +74,17 @@ public class RouterRequest {
             jsonObject.put("domain", domain);
             jsonObject.put("provider", provider);
             jsonObject.put("action", action);
-            jsonObject.put("data", data);
+
+            try {
+                JSONObject jsonData = new JSONObject();
+                for (Map.Entry<String, String> entry : data.entrySet()) {
+                    jsonData.put(entry.getKey(),entry.getValue());
+                }
+                jsonObject.put("data", jsonData);
+            } catch (Exception e) {
+                e.printStackTrace();
+                jsonObject.put("data", "{}");
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
