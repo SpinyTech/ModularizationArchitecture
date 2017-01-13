@@ -1,6 +1,5 @@
 package com.spinytech.macore;
 
-import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,9 +51,9 @@ public class MaActionResult {
     public String toString() {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("code",code);
-            jsonObject.put("msg",msg);
-            jsonObject.put("data",data);
+            jsonObject.put("code", code);
+            jsonObject.put("msg", msg);
+            jsonObject.put("data", data);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -75,10 +74,14 @@ public class MaActionResult {
         }
 
         public Builder resultString(String resultString) {
-            MaActionResult maActionResult = new Gson().fromJson(resultString, MaActionResult.class);
-            this.mCode = maActionResult.code;
-            this.mMsg = maActionResult.msg;
-            this.mData = maActionResult.data;
+            try {
+                JSONObject jsonObject = new JSONObject(resultString);
+                this.mCode = jsonObject.getInt("code");
+                this.mMsg = jsonObject.getString("msg");
+                this.mData = jsonObject.getString("data");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             return this;
         }
 

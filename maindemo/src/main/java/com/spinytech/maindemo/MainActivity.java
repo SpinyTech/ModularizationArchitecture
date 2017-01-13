@@ -22,20 +22,18 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.main_local_sync_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for (int i = 0; i < 1000; i++) {
-                    RouterRequest request = new RouterRequest.Builder(getApplicationContext())
-                            .provider("main")
-                            .action("sync")
-                            .data("1", "Hello")
-                            .data("2", "World")
-                            .build();
-                    try {
-                        RouterResponse response = LocalRouter.getInstance((MaApplication) getApplication())
-                                .route(MainActivity.this, request);
-                        Toast.makeText(MainActivity.this, response.get(), Toast.LENGTH_SHORT).show();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                RouterRequest request = new RouterRequest.Builder(getApplicationContext())
+                        .provider("main")
+                        .action("sync")
+                        .data("1", "Hello")
+                        .data("2", "World")
+                        .build();
+                try {
+                    RouterResponse response = LocalRouter.getInstance((MaApplication) getApplication())
+                            .route(MainActivity.this, request);
+                    Toast.makeText(MainActivity.this, response.get(), Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -55,17 +53,16 @@ public class MainActivity extends AppCompatActivity {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            try {
-                                final String temp = response.getData();
-                                handler.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(MainActivity.this, temp, Toast.LENGTH_SHORT).show();
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        Toast.makeText(MainActivity.this, response.get(), Toast.LENGTH_SHORT).show();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
                                     }
-                                });
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                                }
+                            });
                         }
                     }).start();
                 } catch (Exception e) {
@@ -208,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
                         .domain("com.spinytech.maindemo:pic")
                         .provider("pic")
                         .action("pic")
-                        .data("is_big","0")
+                        .data("is_big", "0")
                         .build();
                 try {
                     final RouterResponse response = LocalRouter.getInstance((MaApplication) getApplication())
@@ -249,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
                         .domain("com.spinytech.maindemo:pic")
                         .provider("pic")
                         .action("pic")
-                        .data("is_big","1")
+                        .data("is_big", "1")
                         .build();
                 try {
                     final RouterResponse response = LocalRouter.getInstance((MaApplication) getApplication())
@@ -281,7 +278,21 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
+        findViewById(R.id.main_web_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RouterRequest request = new RouterRequest.Builder(getApplicationContext())
+                        .provider("web")
+                        .action("web")
+                        .build();
+                try {
+                    LocalRouter.getInstance((MaApplication) getApplication())
+                            .route(MainActivity.this, request);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
 }

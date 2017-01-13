@@ -1,9 +1,8 @@
 package com.spinytech.macore.router;
 
-import com.google.gson.Gson;
-import com.spinytech.macore.MaActionResult;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -27,7 +26,9 @@ public class RouterResponse {
 
     Object mObject;
 
-    // This is MaActionResult.toString()
+    /**
+     *  This field is MaActionResult.toString()
+     */
     String mResultString;
 
     Future<String> mAsyncResponse;
@@ -51,10 +52,14 @@ public class RouterResponse {
         if (mIsAsync) {
             mResultString = mAsyncResponse.get(mTimeOut, TimeUnit.MILLISECONDS);
             if (!mHasGet) {
-                MaActionResult result = new Gson().fromJson(mResultString, MaActionResult.class);
-                this.mCode = result.getCode();
-                this.mMessage = result.getMsg();
-                this.mData = result.getData();
+                try {
+                    JSONObject jsonObject = new JSONObject(mResultString);
+                    this.mCode = jsonObject.getInt("code");
+                    this.mMessage = jsonObject.getString("msg");
+                    this.mData = jsonObject.getString("data");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 mHasGet = true;
             }
         }
@@ -87,22 +92,6 @@ public class RouterResponse {
             get();
         }
         return mObject;
-    }
-
-    public <T> T getDataEntity(Type type) throws Exception {
-        if (!mHasGet) {
-            get();
-        }
-        Gson gson = new Gson();
-        return gson.fromJson(get(), type);
-    }
-
-    public <T> T getDataEntity(Class<T> clazz) throws Exception {
-        if (!mHasGet) {
-            get();
-        }
-        Gson gson = new Gson();
-        return gson.fromJson(get(), clazz);
     }
 
 }

@@ -50,8 +50,8 @@ public final class WideRouterConnectService extends Service {
             if (!hasRegistered) {
                 Logger.e(TAG, "Bind error: The local router of process " + domain + " is not bidirectional." +
                         "\nPlease create a Service extend LocalRouterConnectService then register it in AndroidManifest.xml and the initializeAllProcessRouter method of MaApplication." +
-                        "\nFor example:"+
-                        "\n<service android:name=\"XXXConnectService\" android:process=\"your process name\"/>"+
+                        "\nFor example:" +
+                        "\n<service android:name=\"XXXConnectService\" android:process=\"your process name\"/>" +
                         "\nWideRouter.registerLocalRouter(\"your process name\",XXXConnectService.class);");
                 return null;
             }
@@ -66,25 +66,18 @@ public final class WideRouterConnectService extends Service {
     IWideRouterAIDL.Stub stub = new IWideRouterAIDL.Stub() {
 
         @Override
-        public boolean checkResponseAsync(String routerRequest) throws RemoteException {
+        public boolean checkResponseAsync(String domain, String routerRequest) throws RemoteException {
             return
                     WideRouter.getInstance((MaApplication) getApplication())
-                            .answerLocalAsync(new RouterRequest
-                                    .Builder(getApplicationContext())
-                                    .json(routerRequest)
-                                    .build());
+                            .answerLocalAsync(domain, routerRequest);
         }
 
         @Override
-        public String route(String routerRequest) {
+        public String route(String domain, String routerRequest) {
             try {
-                return
-                        WideRouter.getInstance((MaApplication) getApplication())
-                                .route(new RouterRequest
-                                        .Builder(getApplicationContext())
-                                        .json(routerRequest)
-                                        .build())
-                                .mResultString;
+                return WideRouter.getInstance((MaApplication) getApplication())
+                        .route(domain, routerRequest)
+                        .mResultString;
             } catch (Exception e) {
                 e.printStackTrace();
                 return new MaActionResult.Builder()
@@ -97,9 +90,8 @@ public final class WideRouterConnectService extends Service {
 
         @Override
         public boolean stopRouter(String domain) throws RemoteException {
-            return
-                    WideRouter.getInstance((MaApplication) getApplication())
-                            .disconnectLocalRouter(domain);
+            return WideRouter.getInstance((MaApplication) getApplication())
+                    .disconnectLocalRouter(domain);
         }
 
     };

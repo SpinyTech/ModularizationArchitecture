@@ -1,14 +1,18 @@
 package com.spinytech.macore.router;
 
 import android.content.Context;
+import android.text.TextUtils;
 
-import com.google.gson.Gson;
 import com.spinytech.macore.tools.Logger;
 import com.spinytech.macore.tools.ProcessUtil;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * Created by wanglei on 2016/12/27.
@@ -16,6 +20,7 @@ import java.util.HashMap;
 
 public class RouterRequest {
     private static final String TAG = "RouterRequest";
+    private static volatile String DEFAULT_PROCESS;
     private String from;
     private String domain;
     private String provider;
@@ -51,9 +56,29 @@ public class RouterRequest {
         return data;
     }
 
+    private static String getProcess(Context context) {
+        if (TextUtils.isEmpty(DEFAULT_PROCESS) || ProcessUtil.UNKNOWN_PROCESS_NAME.equals(DEFAULT_PROCESS)) {
+            DEFAULT_PROCESS = ProcessUtil.getProcessName(context, ProcessUtil.getMyProcessId());
+        }
+        return DEFAULT_PROCESS;
+    }
+
     @Override
     public String toString() {
-        return new Gson().toJson(this);
+        //Here remove Gson to save about 10ms.
+        //String result = new Gson().toJson(this);
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("from", from);
+            jsonObject.put("domain", domain);
+            jsonObject.put("provider", provider);
+            jsonObject.put("action", action);
+            jsonObject.put("data", data);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return jsonObject.toString();
     }
 
     public static class Builder {
@@ -64,41 +89,58 @@ public class RouterRequest {
         private HashMap<String, String> mData;
 
         public Builder(Context context) {
-            mFrom = ProcessUtil.getProcessName(context, ProcessUtil.getMyProcessId());
-            mDomain = ProcessUtil.getProcessName(context, ProcessUtil.getMyProcessId());
+            mFrom = getProcess(context);
+            mDomain = getProcess(context);
             mProvider = "";
             mAction = "";
             mData = new HashMap<>();
         }
 
         public Builder json(String requestJsonString) {
-            RouterRequest routerRequest = new Gson().fromJson(requestJsonString, RouterRequest.class);
-            this.mFrom = routerRequest.from;
-            this.mDomain = routerRequest.domain;
-            this.mProvider = routerRequest.provider;
-            this.mAction = routerRequest.action;
-            this.mData = routerRequest.data;
+            //Here remove Gson to save about 10ms.
+            //RouterRequest routerRequest = new Gson().fromJson(requestJsonString, RouterRequest.class);
+            try {
+                JSONObject jsonObject = new JSONObject(requestJsonString);
+                this.mFrom = jsonObject.getString("from");
+                this.mDomain = jsonObject.getString("domain");
+                this.mProvider = jsonObject.getString("provider");
+                this.mAction = jsonObject.getString("action");
+                try {
+                    JSONObject jsonData = new JSONObject(jsonObject.getString("data"));
+                    Iterator it = jsonData.keys();
+                    while (it.hasNext()) {
+                        String key = String.valueOf(it.next());
+                        String value = (String) jsonData.get(key);
+                        this.mData.put(key, value);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    this.mData = new HashMap<>();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             return this;
         }
 
-        public Builder url(String url){
+        public Builder url(String url) {
             int questIndex = url.indexOf('?');
             String[] urls = url.split("\\?");
-            if(urls.length!=1||urls.length!=2){
-                Logger.e(TAG,"The url is illegal.");
+            if (urls.length != 1 && urls.length != 2) {
+                Logger.e(TAG, "The url is illegal.");
                 return this;
             }
             String[] targets = urls[0].split("/");
-            if(targets.length==3){
+            if (targets.length == 3) {
                 this.mDomain = targets[0];
                 this.mProvider = targets[1];
                 this.mAction = targets[2];
-            }else{
-                Logger.e(TAG,"The url is illegal.");
+            } else {
+                Logger.e(TAG, "The url is illegal.");
                 return this;
             }
             //Add params
-            if (questIndex != -1){
+            if (questIndex != -1) {
                 String queryString = urls[1];
                 if (queryString != null && queryString.length() > 0) {
                     int ampersandIndex, lastAmpersandIndex = 0;

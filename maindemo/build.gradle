@@ -32,5 +32,6 @@ dependencies {
     compile project(':macore')
     compile project(':musicdemo')
     compile project(':picdemo')
+    compile project(':webdemo')
 
 }

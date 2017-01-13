@@ -18,6 +18,6 @@ public class PriorityLogicWrapper implements Comparable<PriorityLogicWrapper> {
 
     @Override
     public int compareTo(PriorityLogicWrapper o) {
-        return this.priority - o.priority;
+        return o.priority - this.priority;
     }
 }

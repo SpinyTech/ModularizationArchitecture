@@ -1,6 +1,7 @@
 package com.spinytech.maindemo;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.spinytech.macore.MaAction;
 import com.spinytech.macore.MaActionResult;
@@ -25,10 +26,17 @@ public class AsyncAction extends MaAction {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        String temp = "";
+        if(!TextUtils.isEmpty(requestData.get("1"))){
+            temp+=requestData.get("1");
+        }
+        if(!TextUtils.isEmpty(requestData.get("2"))){
+            temp+=requestData.get("2");
+        }
         MaActionResult result = new MaActionResult.Builder()
                 .code(MaActionResult.CODE_SUCCESS)
                 .msg("success")
-                .data(requestData.get("1")+requestData.get("2"))
+                .data(temp)
                 .object(null)
                 .build();
         return result;

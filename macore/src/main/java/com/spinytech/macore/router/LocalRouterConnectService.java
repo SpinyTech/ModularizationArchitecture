@@ -41,13 +41,13 @@ public class LocalRouterConnectService extends Service {
         @Override
         public String route(String routerRequest) {
             try {
-                return LocalRouter
-                        .getInstance((MaApplication) getApplication())
-                        .route(LocalRouterConnectService.this, new RouterRequest
-                                .Builder(getApplicationContext())
-                                .json(routerRequest)
-                                .build())
-                        .get();
+                LocalRouter localRouter = LocalRouter.getInstance((MaApplication) getApplication());
+                RouterRequest routerRequest1 = new RouterRequest
+                        .Builder(getApplicationContext())
+                        .json(routerRequest)
+                        .build();
+                RouterResponse routerResponse = localRouter.route(LocalRouterConnectService.this,routerRequest1);
+                return routerResponse.get();
             } catch (Exception e) {
                 e.printStackTrace();
                 return new MaActionResult.Builder().msg(e.getMessage()).build().toString();
