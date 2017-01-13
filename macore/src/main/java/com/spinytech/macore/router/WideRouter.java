@@ -86,6 +86,11 @@ public class WideRouter {
                 if (null == temp) {
                     mLocalRouterAIDLMap.put(domain, mLocalRouterAIDL);
                     mLocalRouterConnectionMap.put(domain, this);
+                    try {
+                        mLocalRouterAIDL.connectWideRouter();
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -108,6 +113,14 @@ public class WideRouter {
         } else if (null == mLocalRouterConnectionMap.get(domain)) {
             return false;
         } else {
+            ILocalRouterAIDL aidl = mLocalRouterAIDLMap.get(domain);
+            if (null != aidl) {
+                try {
+                    aidl.stopWideRouter();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
             mApplication.unbindService(mLocalRouterConnectionMap.get(domain));
             mLocalRouterAIDLMap.remove(domain);
             mLocalRouterConnectionMap.remove(domain);
@@ -132,7 +145,9 @@ public class WideRouter {
                         } catch (RemoteException e) {
                             e.printStackTrace();
                         }
-                        disconnectLocalRouter(domain);
+                        mApplication.unbindService(mLocalRouterConnectionMap.get(domain));
+                        mLocalRouterAIDLMap.remove(domain);
+                        mLocalRouterConnectionMap.remove(domain);
                     }
                 }
                 try {

@@ -73,13 +73,13 @@ public class LocalRouter {
         return threadPool;
     }
 
-    void connectWideRouter() {
+    public void connectWideRouter() {
         Intent binderIntent = new Intent(mApplication, WideRouterConnectService.class);
         binderIntent.putExtra("domain", mProcessName);
         mApplication.bindService(binderIntent, mServiceConnection, BIND_AUTO_CREATE);
     }
 
-    void disconnectWideRouter() {
+    public void disconnectWideRouter() {
         if (null == mServiceConnection) {
             return;
         }
@@ -92,7 +92,7 @@ public class LocalRouter {
     }
 
 
-    private boolean checkWideRouterConnection() {
+    public boolean checkWideRouterConnection() {
         boolean result = false;
         if (mWideRouterAIDL != null) {
             result = true;
@@ -137,17 +137,18 @@ public class LocalRouter {
             if (checkWideRouterConnection()) {
                 Logger.d(TAG, "Process:" + mProcessName + "\nWide async check start: " + System.currentTimeMillis());
                 //If you don't need wide async check, use "routerResponse.mIsAsync = false;" replace the next line to improve performance.
-                routerResponse.mIsAsync = mWideRouterAIDL.checkResponseAsync(routerRequest.getDomain(),routerRequest.toString());
+                routerResponse.mIsAsync = mWideRouterAIDL.checkResponseAsync(routerRequest.getDomain(), routerRequest.toString());
                 Logger.d(TAG, "Process:" + mProcessName + "\nWide async check end: " + System.currentTimeMillis());
             }
             // Has not connected with the wide router.
             else {
                 routerResponse.mIsAsync = true;
-                ConnectWideTask task = new ConnectWideTask(routerResponse,routerRequest);
+                ConnectWideTask task = new ConnectWideTask(routerResponse, routerRequest);
                 routerResponse.mAsyncResponse = getThreadPool().submit(task);
+                return routerResponse;
             }
             if (!routerResponse.mIsAsync) {
-                routerResponse.mResultString = mWideRouterAIDL.route(routerRequest.getDomain(),routerRequest.toString());
+                routerResponse.mResultString = mWideRouterAIDL.route(routerRequest.getDomain(), routerRequest.toString());
                 Logger.d(TAG, "Process:" + mProcessName + "\nWide sync end: " + System.currentTimeMillis());
             }
             // Async result, use the thread pool to execute the task.
@@ -162,12 +163,7 @@ public class LocalRouter {
     public boolean stopSelf(Class<? extends LocalRouterConnectService> clazz) {
         if (checkWideRouterConnection()) {
             try {
-                if (mWideRouterAIDL.stopRouter(mProcessName)) {
-                    disconnectWideRouter();
-                    return true;
-                } else {
-                    return false;
-                }
+                return mWideRouterAIDL.stopRouter(mProcessName);
             } catch (RemoteException e) {
                 e.printStackTrace();
                 return false;
@@ -192,7 +188,7 @@ public class LocalRouter {
 
     private MaAction findRequestAction(RouterRequest routerRequest) {
         MaProvider targetProvider = mProviders.get(routerRequest.getProvider());
-        ErrorAction defaultNotFoundAction = new ErrorAction(false,MaActionResult.CODE_NOT_FOUND,"Not found the action.");
+        ErrorAction defaultNotFoundAction = new ErrorAction(false, MaActionResult.CODE_NOT_FOUND, "Not found the action.");
         if (null == targetProvider) {
             return defaultNotFoundAction;
         } else {
@@ -237,7 +233,7 @@ public class LocalRouter {
         @Override
         public String call() throws Exception {
             Logger.d(TAG, "Process:" + mProcessName + "\nWide async start: " + System.currentTimeMillis());
-            String result = mWideRouterAIDL.route(mRequest.getDomain(),mRequest.toString());
+            String result = mWideRouterAIDL.route(mRequest.getDomain(), mRequest.toString());
             Logger.d(TAG, "Process:" + mProcessName + "\nWide async end: " + System.currentTimeMillis());
             return result;
         }
@@ -276,7 +272,7 @@ public class LocalRouter {
                 }
             }
             Logger.d(TAG, "Process:" + mProcessName + "\nBind wide router end: " + System.currentTimeMillis());
-            String result = mWideRouterAIDL.route(mRequest.getDomain(),mRequest.toString());
+            String result = mWideRouterAIDL.route(mRequest.getDomain(), mRequest.toString());
             Logger.d(TAG, "Process:" + mProcessName + "\nWide async end: " + System.currentTimeMillis());
             return result;
         }

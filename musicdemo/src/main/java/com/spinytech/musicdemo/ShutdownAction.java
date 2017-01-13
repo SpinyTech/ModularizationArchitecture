@@ -2,6 +2,7 @@ package com.spinytech.musicdemo;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import com.spinytech.macore.MaAction;
 import com.spinytech.macore.MaActionResult;
@@ -18,7 +19,7 @@ public class ShutdownAction extends MaAction {
 
     @Override
     public boolean isAsync(Context context, HashMap<String, String> requestData) {
-        return false;
+        return true;
     }
 
     @Override
@@ -30,7 +31,9 @@ public class ShutdownAction extends MaAction {
                 .object(null)
                 .build();
         context.getApplicationContext().stopService(new Intent(context,MusicService.class));
-        LocalRouter.getInstance((MaApplication)context.getApplicationContext()).stopSelf(MusicRouterConnectService.class);
+
+        boolean stopslef =LocalRouter.getInstance((MaApplication)context.getApplicationContext()).stopSelf(MusicRouterConnectService.class);
+        Log.e("stopslef",""+stopslef);
         new Thread(new Runnable() {
             @Override
             public void run() {
