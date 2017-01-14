@@ -43,8 +43,8 @@ public class MainActivity extends AppCompatActivity {
                 RouterRequest request = new RouterRequest.Builder(getApplicationContext())
                         .provider("main")
                         .action("async")
-                        .data("1", "Hello")
-                        .data("2", "World")
+                        .data("1", "time:")
+                        .data("2", ""+System.currentTimeMillis())
                         .build();
                 try {
                     final RouterResponse response = LocalRouter.getInstance((MaApplication) getApplication())
@@ -53,16 +53,22 @@ public class MainActivity extends AppCompatActivity {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    try {
-                                        Toast.makeText(MainActivity.this, response.get(), Toast.LENGTH_SHORT).show();
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
+                            try {
+                                final String result = response.get();
+                                handler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            Toast.makeText(MainActivity.this, result, Toast.LENGTH_SHORT).show();
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
                                     }
-                                }
-                            });
+                                });
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
                         }
                     }).start();
                 } catch (Exception e) {

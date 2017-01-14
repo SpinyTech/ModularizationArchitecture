@@ -7,7 +7,6 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.spinytech.macore.ErrorAction;
 import com.spinytech.macore.IWideRouterAIDL;
@@ -40,7 +39,6 @@ public class LocalRouter {
     private ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            Log.e(TAG, "SER" + service);
             mWideRouterAIDL = IWideRouterAIDL.Stub.asInterface(service);
         }
 

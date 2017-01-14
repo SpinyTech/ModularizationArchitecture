@@ -27,7 +27,6 @@ public abstract class MaApplication extends Application {
     private static final String TAG = "MaApplication";
     private ArrayList<PriorityLogicWrapper> mLogicList;
     private HashMap<String, ArrayList<PriorityLogicWrapper>> mLogicClassMap;
-    public static LocalRouter localRouter;
 
     @CallSuper
     @Override
@@ -38,7 +37,7 @@ public abstract class MaApplication extends Application {
         startWideRouter();
         initializeLogic();
         dispatchLogic();
-        instantiationLogic();
+        instantiateLogic();
 
         // Traverse the application logic.
         if (null != mLogicList && mLogicList.size() > 0) {
@@ -52,7 +51,7 @@ public abstract class MaApplication extends Application {
     }
 
     private void init() {
-        localRouter = localRouter.getInstance(this);
+        LocalRouter.getInstance(this);
         mLogicClassMap = new HashMap<>();
     }
 
@@ -97,7 +96,7 @@ public abstract class MaApplication extends Application {
         }
     }
 
-    private void instantiationLogic() {
+    private void instantiateLogic() {
         if (null != mLogicList && mLogicList.size() > 0) {
             if (null != mLogicList && mLogicList.size() > 0) {
                 Collections.sort(mLogicList);

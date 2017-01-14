@@ -16,28 +16,28 @@
                 android:id="@+id/main_local_sync_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_margin="5dp"
                 android:text="local sync" />
 
             <Button
                 android:id="@+id/main_local_async_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_margin="5dp"
                 android:text="local async" />
 
             <Button
                 android:id="@+id/main_play_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_margin="5dp"
                 android:text="play music" />
 
             <Button
                 android:id="@+id/main_stop_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_margin="5dp"
                 android:text="stop music" />
 
 
@@ -45,35 +45,35 @@
                 android:id="@+id/main_music_shutdown_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_margin="5dp"
                 android:text="shutdown music process" />
 
             <Button
                 android:id="@+id/main_wide_shutdown_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_margin="5dp"
                 android:text="shutdown wide router process" />
 
             <Button
                 android:id="@+id/main_pic_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_margin="5dp"
                 android:text="open pic" />
 
             <Button
                 android:id="@+id/main_big_pic_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_margin="5dp"
                 android:text="open big pic (OOM)" />
 
             <Button
                 android:id="@+id/main_web_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_margin="5dp"
                 android:text="open web" />
         </LinearLayout>
     </ScrollView>

@@ -2,6 +2,7 @@ package com.spinytech.maindemo;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.spinytech.macore.MaAction;
 import com.spinytech.macore.MaActionResult;
@@ -33,6 +34,7 @@ public class AsyncAction extends MaAction {
         if(!TextUtils.isEmpty(requestData.get("2"))){
             temp+=requestData.get("2");
         }
+        Log.e("AsyncAction",temp);
         MaActionResult result = new MaActionResult.Builder()
                 .code(MaActionResult.CODE_SUCCESS)
                 .msg("success")
