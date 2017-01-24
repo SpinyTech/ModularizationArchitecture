@@ -30,5 +30,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.1.0'
     testCompile 'junit:junit:4.12'
 
-    compile project(':macore')
+//    compile project(':macore')
+    compile 'com.spinytech.ma:macore:0.1.2'
 }
