@@ -22,15 +22,12 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.main_local_sync_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RouterRequest request = new RouterRequest.Builder(getApplicationContext())
-                        .provider("main")
-                        .action("sync")
-                        .data("1", "Hello")
-                        .data("2", "World")
-                        .build();
                 try {
                     RouterResponse response = LocalRouter.getInstance((MaApplication) getApplication())
-                            .route(MainActivity.this, request);
+                            .route(MainActivity.this, RouterRequest.obtain(MainActivity.this).provider("main")
+                                    .action("sync")
+                                    .data("1", "Hello")
+                                    .data("2", "World"));
                     Toast.makeText(MainActivity.this, response.get(), Toast.LENGTH_SHORT).show();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -40,15 +37,12 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.main_local_async_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RouterRequest request = new RouterRequest.Builder(getApplicationContext())
-                        .provider("main")
-                        .action("async")
-                        .data("1", "time:")
-                        .data("2", ""+System.currentTimeMillis())
-                        .build();
                 try {
                     final RouterResponse response = LocalRouter.getInstance((MaApplication) getApplication())
-                            .route(MainActivity.this, request);
+                            .route(MainActivity.this, RouterRequest.obtain(MainActivity.this).provider("main")
+                                    .action("async")
+                                    .data("1", "Hello")
+                                    .data("2", "World"));
                     Toast.makeText(MainActivity.this, "please wait", Toast.LENGTH_SHORT).show();
                     new Thread(new Runnable() {
                         @Override
@@ -89,7 +83,10 @@ public class MainActivity extends AppCompatActivity {
                         .build();
                 try {
                     final RouterResponse response = LocalRouter.getInstance((MaApplication) getApplication())
-                            .route(MainActivity.this, request);
+                            .route(MainActivity.this, RouterRequest.obtain(MainActivity.this)
+                                    .domain("com.spinytech.maindemo:music")
+                                    .provider("music")
+                                    .action("play"));
                     response.isAsync();
                     new Thread(new Runnable() {
                         @Override
@@ -121,14 +118,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final long startTime = System.currentTimeMillis();
-                RouterRequest request = new RouterRequest.Builder(getApplicationContext())
-                        .domain("com.spinytech.maindemo:music")
-                        .provider("music")
-                        .action("stop")
-                        .build();
                 try {
                     final RouterResponse response = LocalRouter.getInstance((MaApplication) getApplication())
-                            .route(MainActivity.this, request);
+                            .route(MainActivity.this, RouterRequest.obtain(MainActivity.this)
+                                    .domain("com.spinytech.maindemo:music")
+                                    .provider("music")
+                                    .action("stop"));
                     response.isAsync();
                     new Thread(new Runnable() {
                         @Override
@@ -162,14 +157,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final long startTime = System.currentTimeMillis();
-                RouterRequest request = new RouterRequest.Builder(getApplicationContext())
-                        .domain("com.spinytech.maindemo:music")
-                        .provider("music")
-                        .action("shutdown")
-                        .build();
                 try {
                     final RouterResponse response = LocalRouter.getInstance((MaApplication) getApplication())
-                            .route(MainActivity.this, request);
+                            .route(MainActivity.this, RouterRequest.obtain(MainActivity.this)
+                                    .domain("com.spinytech.maindemo:music")
+                                    .provider("music")
+                                    .action("shutdown"));
                     response.isAsync();
                     new Thread(new Runnable() {
                         @Override
@@ -207,15 +200,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final long startTime = System.currentTimeMillis();
-                RouterRequest request = new RouterRequest.Builder(getApplicationContext())
-                        .domain("com.spinytech.maindemo:pic")
-                        .provider("pic")
-                        .action("pic")
-                        .data("is_big", "0")
-                        .build();
                 try {
                     final RouterResponse response = LocalRouter.getInstance((MaApplication) getApplication())
-                            .route(MainActivity.this, request);
+                            .route(MainActivity.this, RouterRequest.obtain(MainActivity.this)
+                                    .domain("com.spinytech.maindemo:pic")
+                                    .provider("pic")
+                                    .action("pic")
+                                    .data("is_big", "0"));
                     response.isAsync();
                     new Thread(new Runnable() {
                         @Override
@@ -248,15 +239,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final long startTime = System.currentTimeMillis();
-                RouterRequest request = new RouterRequest.Builder(getApplicationContext())
-                        .domain("com.spinytech.maindemo:pic")
-                        .provider("pic")
-                        .action("pic")
-                        .data("is_big", "1")
-                        .build();
                 try {
                     final RouterResponse response = LocalRouter.getInstance((MaApplication) getApplication())
-                            .route(MainActivity.this, request);
+                            .route(MainActivity.this, RouterRequest.obtain(MainActivity.this)
+                                    .domain("com.spinytech.maindemo:pic")
+                                    .provider("pic")
+                                    .action("pic")
+                                    .data("is_big", "1"));
                     response.isAsync();
                     new Thread(new Runnable() {
                         @Override
@@ -287,13 +276,12 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.main_web_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RouterRequest request = new RouterRequest.Builder(getApplicationContext())
-                        .provider("web")
-                        .action("web")
-                        .build();
                 try {
                     LocalRouter.getInstance((MaApplication) getApplication())
-                            .route(MainActivity.this, request);
+                            .route(MainActivity.this, RouterRequest.obtain(MainActivity.this)
+                                    .provider("web")
+                                    .action("web")
+                            );
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

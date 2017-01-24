@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     android:sharedUserId="com.spinytech"
-    package="com.spinytech.maindemo">
+    package="com.spinytech.main2demo">
 
     <application
         android:name=".MyApplication"
@@ -17,7 +17,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".MainRouterConnectService"/>
+        <service android:name=".MainRouterConnectService" />
     </application>
 
 </manifest>

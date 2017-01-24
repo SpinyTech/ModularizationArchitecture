@@ -111,20 +111,23 @@ public class LocalRouter {
         RouterResponse routerResponse = new RouterResponse();
         // Local request
         if (mProcessName.equals(routerRequest.getDomain())) {
+            HashMap<String,String> params = new HashMap<>();
+            params.putAll(routerRequest.getData());
             Logger.d(TAG, "Process:" + mProcessName + "\nLocal find action start: " + System.currentTimeMillis());
             MaAction targetAction = findRequestAction(routerRequest);
+            routerRequest.isIdle.set(true);
             Logger.d(TAG, "Process:" + mProcessName + "\nLocal find action end: " + System.currentTimeMillis());
-            routerResponse.mIsAsync = targetAction.isAsync(context, routerRequest.getData());
+            routerResponse.mIsAsync = targetAction.isAsync(context, params);
             // Sync result, return the result immediately.
             if (!routerResponse.mIsAsync) {
-                MaActionResult result = targetAction.invoke(context, routerRequest.getData());
+                MaActionResult result = targetAction.invoke(context, params);
                 routerResponse.mResultString = result.toString();
                 routerResponse.mObject = result.getObject();
                 Logger.d(TAG, "Process:" + mProcessName + "\nLocal sync end: " + System.currentTimeMillis());
             }
             // Async result, use the thread pool to execute the task.
             else {
-                LocalTask task = new LocalTask(routerResponse, routerRequest, context, targetAction);
+                LocalTask task = new LocalTask(routerResponse, params, context, targetAction);
                 routerResponse.mAsyncResponse = getThreadPool().submit(task);
             }
         } else if (!mApplication.needMultipleProcess()) {
@@ -132,26 +135,29 @@ public class LocalRouter {
         }
         // IPC request
         else {
+            String domain = routerRequest.getDomain();
+            String routerRequestString = routerRequest.toString();
+            routerRequest.isIdle.set(true);
             if (checkWideRouterConnection()) {
                 Logger.d(TAG, "Process:" + mProcessName + "\nWide async check start: " + System.currentTimeMillis());
                 //If you don't need wide async check, use "routerResponse.mIsAsync = false;" replace the next line to improve performance.
-                routerResponse.mIsAsync = mWideRouterAIDL.checkResponseAsync(routerRequest.getDomain(), routerRequest.toString());
+                routerResponse.mIsAsync = mWideRouterAIDL.checkResponseAsync(domain, routerRequestString);
                 Logger.d(TAG, "Process:" + mProcessName + "\nWide async check end: " + System.currentTimeMillis());
             }
             // Has not connected with the wide router.
             else {
                 routerResponse.mIsAsync = true;
-                ConnectWideTask task = new ConnectWideTask(routerResponse, routerRequest);
+                ConnectWideTask task = new ConnectWideTask(routerResponse, domain, routerRequestString);
                 routerResponse.mAsyncResponse = getThreadPool().submit(task);
                 return routerResponse;
             }
             if (!routerResponse.mIsAsync) {
-                routerResponse.mResultString = mWideRouterAIDL.route(routerRequest.getDomain(), routerRequest.toString());
+                routerResponse.mResultString = mWideRouterAIDL.route(domain, routerRequestString);
                 Logger.d(TAG, "Process:" + mProcessName + "\nWide sync end: " + System.currentTimeMillis());
             }
             // Async result, use the thread pool to execute the task.
             else {
-                WideTask task = new WideTask(routerRequest);
+                WideTask task = new WideTask(domain, routerRequestString);
                 routerResponse.mAsyncResponse = getThreadPool().submit(task);
             }
         }
@@ -201,20 +207,20 @@ public class LocalRouter {
 
     private class LocalTask implements Callable<String> {
         private RouterResponse mResponse;
-        private RouterRequest mRequest;
+        private HashMap<String, String> mRequestData;
         private Context mContext;
         private MaAction mAction;
 
-        public LocalTask(RouterResponse routerResponse, RouterRequest routerRequest, Context context, MaAction maAction) {
+        public LocalTask(RouterResponse routerResponse, HashMap<String, String> requestData, Context context, MaAction maAction) {
             this.mContext = context;
             this.mResponse = routerResponse;
-            this.mRequest = routerRequest;
+            this.mRequestData = requestData;
             this.mAction = maAction;
         }
 
         @Override
         public String call() throws Exception {
-            MaActionResult result = mAction.invoke(mContext, mRequest.getData());
+            MaActionResult result = mAction.invoke(mContext, mRequestData);
             mResponse.mObject = result.getObject();
             Logger.d(TAG, "Process:" + mProcessName + "\nLocal async end: " + System.currentTimeMillis());
             return result.toString();
@@ -222,28 +228,33 @@ public class LocalRouter {
     }
 
     private class WideTask implements Callable<String> {
-        private RouterRequest mRequest;
 
-        public WideTask(RouterRequest routerRequest) {
-            this.mRequest = routerRequest;
+        private String mDomain;
+        private String mRequestString;
+
+        public WideTask(String domain, String requestString) {
+            this.mDomain = domain;
+            this.mRequestString = requestString;
         }
 
         @Override
         public String call() throws Exception {
             Logger.d(TAG, "Process:" + mProcessName + "\nWide async start: " + System.currentTimeMillis());
-            String result = mWideRouterAIDL.route(mRequest.getDomain(), mRequest.toString());
+            String result = mWideRouterAIDL.route(mDomain, mRequestString);
             Logger.d(TAG, "Process:" + mProcessName + "\nWide async end: " + System.currentTimeMillis());
             return result;
         }
     }
 
     private class ConnectWideTask implements Callable<String> {
-        private RouterRequest mRequest;
         private RouterResponse mResponse;
+        private String mDomain;
+        private String mRequestString;
 
-        public ConnectWideTask(RouterResponse routerResponse, RouterRequest routerRequest) {
-            this.mRequest = routerRequest;
+        public ConnectWideTask(RouterResponse routerResponse, String domain, String requestString) {
             this.mResponse = routerResponse;
+            this.mDomain = domain;
+            this.mRequestString = requestString;
         }
 
         @Override
@@ -264,13 +275,13 @@ public class LocalRouter {
                 }
                 if (time >= 600) {
                     ErrorAction defaultNotFoundAction = new ErrorAction(true, MaActionResult.CODE_CANNOT_BIND_WIDE, "Bind wide router time out. Can not bind wide router.");
-                    MaActionResult result = defaultNotFoundAction.invoke(mApplication, mRequest.getData());
+                    MaActionResult result = defaultNotFoundAction.invoke(mApplication, new HashMap<String, String>());
                     mResponse.mResultString = result.toString();
                     return result.toString();
                 }
             }
             Logger.d(TAG, "Process:" + mProcessName + "\nBind wide router end: " + System.currentTimeMillis());
-            String result = mWideRouterAIDL.route(mRequest.getDomain(), mRequest.toString());
+            String result = mWideRouterAIDL.route(mDomain, mRequestString);
             Logger.d(TAG, "Process:" + mProcessName + "\nWide async end: " + System.currentTimeMillis());
             return result;
         }

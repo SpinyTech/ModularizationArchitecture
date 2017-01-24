@@ -62,7 +62,11 @@ public class WideRouter {
     }
 
     boolean checkLocalRouterHasRegistered(final String domain) {
-        Class<? extends LocalRouterConnectService> clazz = sLocalRouterClasses.get(domain).targetClass;
+        ConnectServiceWrapper connectServiceWrapper = sLocalRouterClasses.get(domain);
+        if(null == connectServiceWrapper){
+            return false;
+        }
+        Class<? extends LocalRouterConnectService> clazz = connectServiceWrapper.targetClass;
         if (null == clazz) {
             return false;
         } else {
@@ -71,7 +75,11 @@ public class WideRouter {
     }
 
     boolean connectLocalRouter(final String domain) {
-        Class<? extends LocalRouterConnectService> clazz = sLocalRouterClasses.get(domain).targetClass;
+        ConnectServiceWrapper connectServiceWrapper = sLocalRouterClasses.get(domain);
+        if(null == connectServiceWrapper){
+            return false;
+        }
+        Class<? extends LocalRouterConnectService> clazz = connectServiceWrapper.targetClass;
         if (null == clazz) {
             return false;
         }
@@ -165,7 +173,11 @@ public class WideRouter {
     boolean answerLocalAsync(String domain, String routerRequest) {
         ILocalRouterAIDL target = mLocalRouterAIDLMap.get(domain);
         if (target == null) {
-            Class<? extends LocalRouterConnectService> clazz = sLocalRouterClasses.get(domain).targetClass;
+            ConnectServiceWrapper connectServiceWrapper = sLocalRouterClasses.get(domain);
+            if(null == connectServiceWrapper){
+                return false;
+            }
+            Class<? extends LocalRouterConnectService> clazz = connectServiceWrapper.targetClass;
             if (null == clazz) {
                 return false;
             } else {
