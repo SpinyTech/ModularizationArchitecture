@@ -32,10 +32,10 @@ public class WebActivity extends AppCompatActivity {
 
 
     public void dispatchAction(String url) {
-        if (url.indexOf("yourprotocol://") >= 0) {
-            String command = url.substring("yourprotocol://".length());
+        if (url.indexOf("your_protocol://") >= 0) {
+            String command = url.substring("your_protocol://".length());
             try {
-                LocalRouter.getInstance((MaApplication) getApplication()).route(this, new RouterRequest.Builder(this).url(command).build());
+                LocalRouter.getInstance(MaApplication.getMaApplication()).route(this, new RouterRequest.Builder(this).url(command).build());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -45,7 +45,7 @@ public class WebActivity extends AppCompatActivity {
     class MyWebViewClient extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            if (!TextUtils.isEmpty(url) && url.startsWith("yourprotocol://")) {
+            if (!TextUtils.isEmpty(url) && url.startsWith("your_protocol://")) {
                 dispatchAction(url);
             } else {
                 mContentWv.loadUrl(url);

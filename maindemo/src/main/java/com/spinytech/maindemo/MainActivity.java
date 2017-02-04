@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    RouterResponse response = LocalRouter.getInstance((MaApplication) getApplication())
+                    RouterResponse response = LocalRouter.getInstance(MaApplication.getMaApplication())
                             .route(MainActivity.this, RouterRequest.obtain(MainActivity.this).provider("main")
                                     .action("sync")
                                     .data("1", "Hello")
@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    final RouterResponse response = LocalRouter.getInstance((MaApplication) getApplication())
+                    final RouterResponse response = LocalRouter.getInstance(MaApplication.getMaApplication())
                             .route(MainActivity.this, RouterRequest.obtain(MainActivity.this).provider("main")
                                     .action("async")
                                     .data("1", "Hello")
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
                         .action("play")
                         .build();
                 try {
-                    final RouterResponse response = LocalRouter.getInstance((MaApplication) getApplication())
+                    final RouterResponse response = LocalRouter.getInstance(MaApplication.getMaApplication())
                             .route(MainActivity.this, RouterRequest.obtain(MainActivity.this)
                                     .domain("com.spinytech.maindemo:music")
                                     .provider("music")
@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 final long startTime = System.currentTimeMillis();
                 try {
-                    final RouterResponse response = LocalRouter.getInstance((MaApplication) getApplication())
+                    final RouterResponse response = LocalRouter.getInstance(MaApplication.getMaApplication())
                             .route(MainActivity.this, RouterRequest.obtain(MainActivity.this)
                                     .domain("com.spinytech.maindemo:music")
                                     .provider("music")
@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 final long startTime = System.currentTimeMillis();
                 try {
-                    final RouterResponse response = LocalRouter.getInstance((MaApplication) getApplication())
+                    final RouterResponse response = LocalRouter.getInstance(MaApplication.getMaApplication())
                             .route(MainActivity.this, RouterRequest.obtain(MainActivity.this)
                                     .domain("com.spinytech.maindemo:music")
                                     .provider("music")
@@ -193,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.main_wide_shutdown_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LocalRouter.getInstance((MaApplication) getApplication()).stopWideRouter();
+                LocalRouter.getInstance(MaApplication.getMaApplication()).stopWideRouter();
             }
         });
         findViewById(R.id.main_pic_btn).setOnClickListener(new View.OnClickListener() {
@@ -201,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 final long startTime = System.currentTimeMillis();
                 try {
-                    final RouterResponse response = LocalRouter.getInstance((MaApplication) getApplication())
+                    final RouterResponse response = LocalRouter.getInstance(MaApplication.getMaApplication())
                             .route(MainActivity.this, RouterRequest.obtain(MainActivity.this)
                                     .domain("com.spinytech.maindemo:pic")
                                     .provider("pic")
@@ -240,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 final long startTime = System.currentTimeMillis();
                 try {
-                    final RouterResponse response = LocalRouter.getInstance((MaApplication) getApplication())
+                    final RouterResponse response = LocalRouter.getInstance(MaApplication.getMaApplication())
                             .route(MainActivity.this, RouterRequest.obtain(MainActivity.this)
                                     .domain("com.spinytech.maindemo:pic")
                                     .provider("pic")
@@ -277,7 +277,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    LocalRouter.getInstance((MaApplication) getApplication())
+                    LocalRouter.getInstance(MaApplication.getMaApplication())
                             .route(MainActivity.this, RouterRequest.obtain(MainActivity.this)
                                     .provider("web")
                                     .action("web")

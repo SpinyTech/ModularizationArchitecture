@@ -33,7 +33,7 @@ public class LocalRouterConnectService extends Service {
 
         @Override
         public boolean checkResponseAsync(String routerRequest) throws RemoteException {
-            return LocalRouter.getInstance((MaApplication) getApplication()).
+            return LocalRouter.getInstance(MaApplication.getMaApplication()).
                     answerWiderAsync(new RouterRequest
                             .Builder(getApplicationContext())
                             .json(routerRequest)
@@ -43,7 +43,7 @@ public class LocalRouterConnectService extends Service {
         @Override
         public String route(String routerRequest) {
             try {
-                LocalRouter localRouter = LocalRouter.getInstance((MaApplication) getApplication());
+                LocalRouter localRouter = LocalRouter.getInstance(MaApplication.getMaApplication());
                 RouterRequest routerRequest1 = new RouterRequest
                         .Builder(getApplicationContext())
                         .json(routerRequest)
@@ -59,7 +59,7 @@ public class LocalRouterConnectService extends Service {
         @Override
         public boolean stopWideRouter() throws RemoteException {
             LocalRouter
-                    .getInstance((MaApplication) getApplication())
+                    .getInstance(MaApplication.getMaApplication())
                     .disconnectWideRouter();
             return true;
         }
@@ -67,7 +67,7 @@ public class LocalRouterConnectService extends Service {
         @Override
         public void connectWideRouter() throws RemoteException {
             LocalRouter
-                    .getInstance((MaApplication) getApplication())
+                    .getInstance(MaApplication.getMaApplication())
                     .connectWideRouter();
         }
     };

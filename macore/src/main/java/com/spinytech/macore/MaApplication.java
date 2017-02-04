@@ -25,6 +25,7 @@ import java.util.HashMap;
 
 public abstract class MaApplication extends Application {
     private static final String TAG = "MaApplication";
+    private static MaApplication sInstance;
     private ArrayList<PriorityLogicWrapper> mLogicList;
     private HashMap<String, ArrayList<PriorityLogicWrapper>> mLogicClassMap;
 
@@ -32,6 +33,7 @@ public abstract class MaApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        sInstance = this;
         Logger.d(TAG,"Application onCreate start: "+System.currentTimeMillis());
         init();
         startWideRouter();
@@ -166,4 +168,7 @@ public abstract class MaApplication extends Application {
         }
     }
 
+    public static MaApplication getMaApplication(){
+        return sInstance;
+    }
 }

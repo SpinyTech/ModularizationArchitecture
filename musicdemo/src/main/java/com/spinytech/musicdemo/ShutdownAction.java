@@ -32,7 +32,7 @@ public class ShutdownAction extends MaAction {
                 .build();
         context.getApplicationContext().stopService(new Intent(context,MusicService.class));
 
-        boolean stopslef =LocalRouter.getInstance((MaApplication)context.getApplicationContext()).stopSelf(MusicRouterConnectService.class);
+        boolean stopslef =LocalRouter.getInstance(MaApplication.getMaApplication()).stopSelf(MusicRouterConnectService.class);
         Log.e("stopslef",""+stopslef);
         new Thread(new Runnable() {
             @Override
