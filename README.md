@@ -4,10 +4,10 @@ This is an android modularization architecture library to help developer decoupl
 
 ## Getting Start
 
+[开始使用](http://blog.spinytech.com/2017/02/01/ma_get_start_cn/)
+
 //TODO  
 [Getting Start]()  
-
-[开始使用]()
 
 ## Download
 

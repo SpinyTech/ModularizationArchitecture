@@ -34,7 +34,7 @@ public class RouterResponse {
     Future<String> mAsyncResponse;
 
     public RouterResponse() {
-        mTimeOut = TIME_OUT;
+        this(TIME_OUT);
     }
 
     public RouterResponse(long timeout) {
