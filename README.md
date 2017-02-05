@@ -1,13 +1,12 @@
 # ModularizationArchitecture
 
-This is an android modularization architecture library to help developer decoupling your project.
+ModularizationArchitecture is a routing-based multi-process, component-based architecture on the Android platform: it communicates with different modules and processes by sharing routes without referring to other modules. It is suitable for medium-sized App architecture team collaboration, parallel development, business line decoupling, white-box testing and other scenes.
 
 ## Getting Start
 
 [开始使用](http://blog.spinytech.com/2017/02/01/ma_get_start_cn/)
 
-//TODO  
-[Getting Start]()  
+[Getting Start](http://blog.spinytech.com/2017/02/03/ma_get_start_en/)
 
 ## Download
 
