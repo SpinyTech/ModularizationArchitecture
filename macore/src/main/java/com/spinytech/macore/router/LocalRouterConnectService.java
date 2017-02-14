@@ -41,7 +41,7 @@ public class LocalRouterConnectService extends Service {
         }
 
         @Override
-        public String route(String routerRequest) {
+        public MaActionResult route(String routerRequest) {
             try {
                 LocalRouter localRouter = LocalRouter.getInstance(MaApplication.getMaApplication());
                 RouterRequest routerRequest1 = new RouterRequest
@@ -52,7 +52,7 @@ public class LocalRouterConnectService extends Service {
                 return routerResponse.get();
             } catch (Exception e) {
                 e.printStackTrace();
-                return new MaActionResult.Builder().msg(e.getMessage()).build().toString();
+                return new MaActionResult.Builder().msg(e.getMessage()).build();
             }
         }
 

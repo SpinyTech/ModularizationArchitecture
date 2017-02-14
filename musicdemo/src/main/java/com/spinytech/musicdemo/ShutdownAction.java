@@ -28,7 +28,7 @@ public class ShutdownAction extends MaAction {
                 .code(MaActionResult.CODE_SUCCESS)
                 .msg("success")
                 .data("")
-                .object(null)
+                .result(null)
                 .build();
         context.getApplicationContext().stopService(new Intent(context,MusicService.class));
 

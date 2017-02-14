@@ -1,7 +1,6 @@
 package com.spinytech.macore.router;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.spinytech.macore.MaActionResult;
 
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -24,14 +23,9 @@ public class RouterResponse {
 
     String mData;
 
-    Object mObject;
+    MaActionResult mResult;
 
-    /**
-     *  This field is MaActionResult.toString()
-     */
-    String mResultString;
-
-    Future<String> mAsyncResponse;
+    Future<MaActionResult> mAsyncResponse;
 
     public RouterResponse() {
         this(TIME_OUT);
@@ -48,22 +42,17 @@ public class RouterResponse {
         return mIsAsync;
     }
 
-    public String get() throws Exception {
+    public MaActionResult get() throws Exception {
         if (mIsAsync) {
-            mResultString = mAsyncResponse.get(mTimeOut, TimeUnit.MILLISECONDS);
+            mResult = mAsyncResponse.get(mTimeOut, TimeUnit.MILLISECONDS);
             if (!mHasGet) {
-                try {
-                    JSONObject jsonObject = new JSONObject(mResultString);
-                    this.mCode = jsonObject.getInt("code");
-                    this.mMessage = jsonObject.getString("msg");
-                    this.mData = jsonObject.getString("data");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                this.mCode = mResult.getCode();
+                this.mMessage = mResult.getMsg();
+                this.mData = mResult.getData();
                 mHasGet = true;
             }
         }
-        return mResultString;
+        return mResult;
     }
 
     public int getCode() throws Exception {
@@ -85,13 +74,6 @@ public class RouterResponse {
             get();
         }
         return mData;
-    }
-
-    public Object getObject() throws Exception {
-        if (!mHasGet) {
-            get();
-        }
-        return mObject;
     }
 
 }

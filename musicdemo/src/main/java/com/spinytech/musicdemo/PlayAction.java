@@ -27,8 +27,8 @@ public class PlayAction extends MaAction {
         MaActionResult result = new MaActionResult.Builder()
                 .code(MaActionResult.CODE_SUCCESS)
                 .msg("play success")
-                .data("")
-                .object(null)
+                .data("lll")
+                .result(new Person("lili"))
                 .build();
         return result;
     }

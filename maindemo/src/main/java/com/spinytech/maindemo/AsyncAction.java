@@ -39,7 +39,7 @@ public class AsyncAction extends MaAction {
                 .code(MaActionResult.CODE_SUCCESS)
                 .msg("success")
                 .data(temp)
-                .object(null)
+                .result(null)
                 .build();
         return result;
     }

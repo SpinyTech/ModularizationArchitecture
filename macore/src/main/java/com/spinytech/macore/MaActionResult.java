@@ -1,13 +1,13 @@
 package com.spinytech.macore;
 
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * Created by wanglei on 16/6/14.
  */
-public class MaActionResult {
+public class MaActionResult<T> implements Parcelable {
     public static final int CODE_SUCCESS = 0x0000;
     public static final int CODE_ERROR = 0x0001;
     public static final int CODE_NOT_FOUND = 0X0002;
@@ -22,17 +22,36 @@ public class MaActionResult {
     private int code;
     private String msg;
     private String data;
-    private Object object;
+    private T result;
 
     private MaActionResult(Builder builder) {
-        this.code = builder.mCode;
-        this.msg = builder.mMsg;
-        this.data = builder.mData;
-        this.object = builder.mObject;
+        code = builder.code;
+        msg = builder.msg;
+        data = builder.data;
+        result = (T) builder.result;
     }
 
-    public Object getObject() {
-        return object;
+    protected MaActionResult(Parcel in) {
+        code = in.readInt();
+        msg = in.readString();
+        data = in.readString();
+        result = (T) in.readParcelable(this.getClass().getClassLoader());
+    }
+
+    public static final Creator<MaActionResult> CREATOR = new Creator<MaActionResult>() {
+        @Override
+        public MaActionResult createFromParcel(Parcel in) {
+            return new MaActionResult(in);
+        }
+
+        @Override
+        public MaActionResult[] newArray(int size) {
+            return new MaActionResult[size];
+        }
+    };
+
+    public Object getResult() {
+        return result;
     }
 
     public String getData() {
@@ -49,59 +68,54 @@ public class MaActionResult {
 
     @Override
     public String toString() {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("code", code);
-            jsonObject.put("msg", msg);
-            jsonObject.put("data", data);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return jsonObject.toString();
+        return "MaActionResult{" +
+                "code=" + code +
+                ", msg='" + msg + '\'' +
+                ", data='" + data + '\'' +
+                ", object=" + result +
+                '}';
     }
 
-    public static class Builder {
-        private int mCode;
-        private String mMsg;
-        private Object mObject;
-        private String mData;
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(code);
+        dest.writeString(msg);
+        dest.writeString(data);
+        dest.writeParcelable((Parcelable) result, flags);
+    }
+
+
+    public static final class Builder<T> {
+        private int code;
+        private String msg;
+        private String data;
+        private T result;
 
         public Builder() {
-            mCode = CODE_ERROR;
-            mMsg = "";
-            mObject = null;
-            mData = null;
         }
 
-        public Builder resultString(String resultString) {
-            try {
-                JSONObject jsonObject = new JSONObject(resultString);
-                this.mCode = jsonObject.getInt("code");
-                this.mMsg = jsonObject.getString("msg");
-                this.mData = jsonObject.getString("data");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+        public Builder code(int val) {
+            code = val;
             return this;
         }
 
-        public Builder code(int code) {
-            this.mCode = code;
+        public Builder msg(String val) {
+            msg = val;
             return this;
         }
 
-        public Builder msg(String msg) {
-            this.mMsg = msg;
+        public Builder data(String val) {
+            data = val;
             return this;
         }
 
-        public Builder data(String data) {
-            this.mData = data;
-            return this;
-        }
-
-        public Builder object(Object object) {
-            this.mObject = object;
+        public Builder result(T val) {
+            result = val;
             return this;
         }
 
@@ -109,6 +123,4 @@ public class MaActionResult {
             return new MaActionResult(this);
         }
     }
-
-
 }

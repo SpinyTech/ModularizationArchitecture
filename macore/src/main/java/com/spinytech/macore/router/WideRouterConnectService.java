@@ -73,18 +73,16 @@ public final class WideRouterConnectService extends Service {
         }
 
         @Override
-        public String route(String domain, String routerRequest) {
+        public MaActionResult route(String domain, String routerRequest) {
             try {
                 return WideRouter.getInstance(MaApplication.getMaApplication())
-                        .route(domain, routerRequest)
-                        .mResultString;
+                        .route(domain, routerRequest).mResult;
             } catch (Exception e) {
                 e.printStackTrace();
                 return new MaActionResult.Builder()
                         .code(MaActionResult.CODE_ERROR)
                         .msg(e.getMessage())
-                        .build()
-                        .toString();
+                        .build();
             }
         }
 

@@ -29,7 +29,7 @@ public class StopAction extends MaAction {
                 .code(MaActionResult.CODE_SUCCESS)
                 .msg("stop success")
                 .data("")
-                .object(null)
+                .result(null)
                 .build();
 
         Logger.d("StopAction", "\nStopAction end: " + System.currentTimeMillis());

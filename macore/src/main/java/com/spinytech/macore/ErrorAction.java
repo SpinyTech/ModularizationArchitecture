@@ -37,7 +37,7 @@ public class ErrorAction extends MaAction {
                 .code(mCode)
                 .msg(mMessage)
                 .data(null)
-                .object(null)
+                .result(null)
                 .build();
         return result;
     }

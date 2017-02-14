@@ -1,9 +1,9 @@
 package com.spinytech.macore;
-
+import com.spinytech.macore.MaActionResult;
 
 interface ILocalRouterAIDL {
     boolean checkResponseAsync(String routerRequset);
-    String route(String routerRequest);
+    MaActionResult route(String routerRequest);
     boolean stopWideRouter();
     void connectWideRouter();
 }

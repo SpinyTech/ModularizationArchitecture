@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
                                     .action("sync")
                                     .data("1", "Hello")
                                     .data("2", "World"));
-                    Toast.makeText(MainActivity.this, response.get(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, response.get().getMsg(), Toast.LENGTH_SHORT).show();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             try {
-                                final String result = response.get();
+                                final String result = response.get().getMsg();
                                 handler.post(new Runnable() {
                                     @Override
                                     public void run() {

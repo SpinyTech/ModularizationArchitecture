@@ -203,7 +203,7 @@ public class WideRouter {
                     .msg("Wide router is stopping.")
                     .build();
             routerResponse.mIsAsync = true;
-            routerResponse.mResultString = result.toString();
+            routerResponse.mResult = result;
             return routerResponse;
         }
         if (PROCESS_NAME.equals(domain)) {
@@ -212,7 +212,7 @@ public class WideRouter {
                     .msg("Domain can not be " + PROCESS_NAME + ".")
                     .build();
             routerResponse.mIsAsync = true;
-            routerResponse.mResultString = result.toString();
+            routerResponse.mResult = result;
             return routerResponse;
         }
         ILocalRouterAIDL target = mLocalRouterAIDLMap.get(domain);
@@ -223,7 +223,7 @@ public class WideRouter {
                         .msg("The " + domain + " has not registered.")
                         .build();
                 routerResponse.mIsAsync = false;
-                routerResponse.mResultString = result.toString();
+                routerResponse.mResult = result;
                 Logger.d(TAG, "Process:" + PROCESS_NAME + "\nLocal not register end: " + System.currentTimeMillis());
                 return routerResponse;
             } else {
@@ -248,7 +248,7 @@ public class WideRouter {
                                 .code(MaActionResult.CODE_CANNOT_BIND_LOCAL)
                                 .msg("Can not bind " + domain + ", time out.")
                                 .build();
-                        routerResponse.mResultString = result.toString();
+                        routerResponse.mResult = result;
                         return routerResponse;
                     }
                 }
@@ -256,8 +256,8 @@ public class WideRouter {
         }
         try {
             Logger.d(TAG, "Process:" + PROCESS_NAME + "\nWide target start: " + System.currentTimeMillis());
-            String resultString = target.route(routerRequest);
-            routerResponse.mResultString = resultString;
+            MaActionResult resultString = target.route(routerRequest);
+            routerResponse.mResult = resultString;
             Logger.d(TAG, "Process:" + PROCESS_NAME + "\nWide route end: " + System.currentTimeMillis());
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -265,7 +265,7 @@ public class WideRouter {
                     .code(MaActionResult.CODE_REMOTE_EXCEPTION)
                     .msg(e.getMessage())
                     .build();
-            routerResponse.mResultString = result.toString();
+            routerResponse.mResult = result;
             return routerResponse;
         }
         return routerResponse;
