@@ -16,7 +16,7 @@ Maven:
 <dependency>
   <groupId>com.spinytech.ma</groupId>
   <artifactId>macore</artifactId>
-  <version>0.1.2</version>
+  <version>0.2.0</version>
   <type>pom</type>
 </dependency>
 ```
@@ -24,7 +24,7 @@ Maven:
 Gradle:
 
 ```groovy
-compile 'com.spinytech.ma:macore:0.1.2'
+compile 'com.spinytech.ma:macore:0.2.0'
 ```
 
 ## ProGuard

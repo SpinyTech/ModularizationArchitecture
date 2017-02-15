@@ -18,6 +18,7 @@ public class MaActionResult {
     public static final int CODE_CANNOT_BIND_WIDE = 0X0007;
     public static final int CODE_TARGET_IS_WIDE = 0X0008;
     public static final int CODE_WIDE_STOPPING = 0X0009;
+    public static final int CODE_NOT_IMPLEMENT = 0X000a;
 
     private int code;
     private String msg;

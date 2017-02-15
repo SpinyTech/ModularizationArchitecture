@@ -287,6 +287,24 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        findViewById(R.id.main_attach_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    RouterResponse response = LocalRouter.getInstance(MaApplication.getMaApplication())
+                            .route(MainActivity.this, RouterRequest.obtain(MainActivity.this)
+                                    .provider("main")
+                                    .action("attachment")
+                                    .object(findViewById(R.id.main_attach_btn))
+                            );
+                    if(response.getObject() instanceof Toast){
+                        ((Toast)response.getObject()).show();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
 }

@@ -111,23 +111,24 @@ public class LocalRouter {
         RouterResponse routerResponse = new RouterResponse();
         // Local request
         if (mProcessName.equals(routerRequest.getDomain())) {
-            HashMap<String,String> params = new HashMap<>();
+            HashMap<String, String> params = new HashMap<>();
+            Object attachment = routerRequest.getAndClearObject();
             params.putAll(routerRequest.getData());
             Logger.d(TAG, "Process:" + mProcessName + "\nLocal find action start: " + System.currentTimeMillis());
             MaAction targetAction = findRequestAction(routerRequest);
             routerRequest.isIdle.set(true);
             Logger.d(TAG, "Process:" + mProcessName + "\nLocal find action end: " + System.currentTimeMillis());
-            routerResponse.mIsAsync = targetAction.isAsync(context, params);
+            routerResponse.mIsAsync = attachment == null ? targetAction.isAsync(context, params) : targetAction.isAsync(context, params, attachment);
             // Sync result, return the result immediately.
             if (!routerResponse.mIsAsync) {
-                MaActionResult result = targetAction.invoke(context, params);
+                MaActionResult result = attachment == null ? targetAction.invoke(context, params) : targetAction.invoke(context, params, attachment);
                 routerResponse.mResultString = result.toString();
                 routerResponse.mObject = result.getObject();
                 Logger.d(TAG, "Process:" + mProcessName + "\nLocal sync end: " + System.currentTimeMillis());
             }
             // Async result, use the thread pool to execute the task.
             else {
-                LocalTask task = new LocalTask(routerResponse, params, context, targetAction);
+                LocalTask task = new LocalTask(routerResponse, params,attachment, context, targetAction);
                 routerResponse.mAsyncResponse = getThreadPool().submit(task);
             }
         } else if (!mApplication.needMultipleProcess()) {
@@ -210,17 +211,18 @@ public class LocalRouter {
         private HashMap<String, String> mRequestData;
         private Context mContext;
         private MaAction mAction;
-
-        public LocalTask(RouterResponse routerResponse, HashMap<String, String> requestData, Context context, MaAction maAction) {
+        private Object mObject;
+        public LocalTask(RouterResponse routerResponse, HashMap<String, String> requestData,Object object, Context context, MaAction maAction) {
             this.mContext = context;
             this.mResponse = routerResponse;
             this.mRequestData = requestData;
             this.mAction = maAction;
+            this.mObject = object;
         }
 
         @Override
         public String call() throws Exception {
-            MaActionResult result = mAction.invoke(mContext, mRequestData);
+            MaActionResult result = mObject == null ? mAction.invoke(mContext, mRequestData) : mAction.invoke(mContext, mRequestData, mObject);
             mResponse.mObject = result.getObject();
             Logger.d(TAG, "Process:" + mProcessName + "\nLocal async end: " + System.currentTimeMillis());
             return result.toString();

@@ -23,12 +23,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class RouterRequest {
     private static final String TAG = "RouterRequest";
-    private static volatile String DEFAULT_PROCESS="";
+    private static volatile String DEFAULT_PROCESS = "";
     private String from;
     private String domain;
     private String provider;
     private String action;
     private HashMap<String, String> data;
+    private Object object;
     AtomicBoolean isIdle = new AtomicBoolean(true);
 
     private static final int length = 64;
@@ -85,6 +86,12 @@ public class RouterRequest {
 
     public HashMap<String, String> getData() {
         return data;
+    }
+
+    public Object getAndClearObject() {
+        Object temp = object;
+        object = null;
+        return temp;
     }
 
     private static String getProcess(Context context) {
@@ -218,11 +225,16 @@ public class RouterRequest {
         return this;
     }
 
-    public static RouterRequest obtain(Context context) {
-        return obtain(context,0);
+    public RouterRequest object(Object object) {
+        this.object = object;
+        return this;
     }
 
-    private static RouterRequest obtain(Context context,int retryTime) {
+    public static RouterRequest obtain(Context context) {
+        return obtain(context, 0);
+    }
+
+    private static RouterRequest obtain(Context context, int retryTime) {
         int index = sIndex.getAndIncrement();
         if (index > RESET_NUM) {
             sIndex.compareAndSet(index, 0);
@@ -244,7 +256,7 @@ public class RouterRequest {
             return target;
         } else {
             if (retryTime < 5) {
-                return obtain(context,retryTime++);
+                return obtain(context, retryTime++);
             } else {
                 return new RouterRequest(context);
             }

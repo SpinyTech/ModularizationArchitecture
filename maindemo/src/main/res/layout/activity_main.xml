@@ -75,6 +75,13 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:text="open web" />
+
+            <Button
+                android:id="@+id/main_attach_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="attach object" />
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

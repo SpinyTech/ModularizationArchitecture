@@ -11,5 +11,6 @@ public class MainProvider extends MaProvider {
     protected void registerActions() {
         registerAction("sync",new SyncAction());
         registerAction("async",new AsyncAction());
+        registerAction("attachment",new AttachObjectAction());
     }
 }
