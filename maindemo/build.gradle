@@ -30,9 +30,14 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:24.2.1'
     testCompile 'junit:junit:4.12'
-    compile project(':macore')
+    if (Local.toBoolean()){
+        compile project(':macore')
+        apt project(':compile')
+    }else{
+        apt 'com.github.wutongke.modularization:compile:1.0.1'
+        compile 'com.github.wutongke.modularization:macore:1.0.1'
+    }
     compile project(':musicdemo')
     compile project(':picdemo')
     compile project(':webdemo')
-    apt project(':compile')
 }

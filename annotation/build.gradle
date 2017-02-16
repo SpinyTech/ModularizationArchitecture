@@ -22,7 +22,7 @@ ext {
     siteUrl = 'https://github.com/wutongke/ModularizationArchitecture'
     gitUrl = 'https://github.com/wutongke/ModularizationArchitecture.git'
 
-    libraryVersion = '1.0.0'
+    libraryVersion = '1.0.1'
 
     developerId = 'wutongke'
     developerName = 'wutongke'

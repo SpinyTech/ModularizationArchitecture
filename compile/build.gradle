@@ -15,15 +15,15 @@ ext {
     bintrayName = 'modularization-compiler'
 
     publishedGroupId = 'com.github.wutongke.modularization'
-    libraryName = 'Compiler'
-    artifact = 'compiler'
+    libraryName = 'Compile'
+    artifact = 'compile'
 
     libraryDescription = 'Modularization architecture'
 
     siteUrl = 'https://github.com/wutongke/ModularizationArchitecture'
     gitUrl = 'https://github.com/wutongke/ModularizationArchitecture.git'
 
-    libraryVersion = '1.0.0'
+    libraryVersion = '1.0.1'
 
     developerId = 'wutongke'
     developerName = 'wutongke'

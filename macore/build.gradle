@@ -29,7 +29,11 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:25.+'
     provided project(':stub')
-    compile project(':annotation')
+    if (Local.toBoolean()){
+        compile project(':annotation')
+    }else{
+        compile 'com.github.wutongke.modularization:annotation:1.0.0'
+    }
 }
 
 ext {
@@ -38,14 +42,14 @@ ext {
 
     publishedGroupId = 'com.github.wutongke.modularization'
     libraryName = 'Modularization'
-    artifact = 'modularization'
+    artifact = 'macore'
 
     libraryDescription = 'Modularization architecture'
 
     siteUrl = 'https://github.com/wutongke/ModularizationArchitecture'
     gitUrl = 'https://github.com/wutongke/ModularizationArchitecture.git'
 
-    libraryVersion = '1.0.0'
+    libraryVersion = '1.0.1'
 
     developerId = 'wutongke'
     developerName = 'wutongke'
