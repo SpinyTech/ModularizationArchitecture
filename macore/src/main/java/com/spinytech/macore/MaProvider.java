@@ -12,7 +12,6 @@ public abstract class MaProvider{
     private HashMap<String,MaAction> mActions;
     public MaProvider(){
         mActions = new HashMap<>();
-        registerActions();
     }
     protected void registerAction(String actionName,MaAction action){
         mActions.put(actionName,action);
@@ -26,5 +25,5 @@ public abstract class MaProvider{
         return mValid;
     }
 
-    protected abstract void registerActions();
+    protected abstract String getName();
 }

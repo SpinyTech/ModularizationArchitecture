@@ -1,5 +1,6 @@
 package com.spinytech.maindemo;
 
+import com.linked.annotion.Modules;
 import com.spinytech.macore.MaApplication;
 import com.spinytech.macore.router.WideRouter;
 import com.spinytech.musicdemo.MusicApplicationLogic;
@@ -11,7 +12,7 @@ import com.spinytech.webdemo.WebApplicationLogic;
 /**
  * Created by wanglei on 2016/11/29.
  */
-
+@Modules(modules = {"music","pic","web"})
 public class MyApplication extends MaApplication {
     @Override
     public void initializeAllProcessRouter() {

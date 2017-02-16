@@ -3,6 +3,7 @@ package com.spinytech.musicdemo;
 import android.content.Context;
 import android.content.Intent;
 
+import com.linked.annotion.Action;
 import com.spinytech.macore.MaAction;
 import com.spinytech.macore.MaActionResult;
 import com.spinytech.macore.tools.Logger;
@@ -12,7 +13,7 @@ import java.util.HashMap;
 /**
  * Created by wanglei on 2016/12/28.
  */
-
+@Action(processName = "com.spinytech.maindemo:music", providerName = "music")
 public class StopAction extends MaAction {
 
     @Override
@@ -34,5 +35,10 @@ public class StopAction extends MaAction {
 
         Logger.d("StopAction", "\nStopAction end: " + System.currentTimeMillis());
         return result;
+    }
+
+    @Override
+    public String getName() {
+        return "stop";
     }
 }

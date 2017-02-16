@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
+import com.linked.annotion.Action;
 import com.spinytech.macore.MaAction;
 import com.spinytech.macore.MaActionResult;
 
@@ -12,7 +13,7 @@ import java.util.HashMap;
 /**
  * Created by wanglei on 2017/1/4.
  */
-
+@Action(processName = "com.spinytech.maindemo", providerName = "web")
 public class WebAction extends MaAction {
     @Override
     public boolean isAsync(Context context, HashMap<String, String> requestData) {
@@ -30,5 +31,10 @@ public class WebAction extends MaAction {
             context.startActivity(i);
         }
         return new MaActionResult.Builder().code(MaActionResult.CODE_SUCCESS).msg("success").data("").build();
+    }
+
+    @Override
+    public String getName() {
+        return "web";
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.linked.annotion.Action;
 import com.spinytech.macore.MaAction;
 import com.spinytech.macore.MaActionResult;
 
@@ -12,7 +13,7 @@ import java.util.HashMap;
 /**
  * Created by wanglei on 2016/12/28.
  */
-
+@Action(processName = "com.spinytech.maindemo", providerName = "main")
 public class SyncAction extends MaAction {
 
     @Override
@@ -37,5 +38,10 @@ public class SyncAction extends MaAction {
                 .result(null)
                 .build();
         return result;
+    }
+
+    @Override
+    public String getName() {
+        return "sync";
     }
 }

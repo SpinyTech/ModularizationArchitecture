@@ -218,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
                                     @Override
                                     public void run() {
                                         try {
-                                            Toast.makeText(MainActivity.this, "async:" + response.isAsync() + " cost:" + time + " response:" + response.get(), Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(MainActivity.this, "async:" + response.isAsync() + " cost:" + time + " response:" + response.get().getResult().toString(), Toast.LENGTH_SHORT).show();
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }

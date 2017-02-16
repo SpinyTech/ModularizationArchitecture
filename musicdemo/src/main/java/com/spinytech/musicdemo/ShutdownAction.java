@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.linked.annotion.Action;
 import com.spinytech.macore.MaAction;
 import com.spinytech.macore.MaActionResult;
 import com.spinytech.macore.MaApplication;
@@ -14,7 +15,7 @@ import java.util.HashMap;
 /**
  * Created by wanglei on 2016/12/28.
  */
-
+@Action(processName = "com.spinytech.maindemo:music", providerName = "music")
 public class ShutdownAction extends MaAction {
 
     @Override
@@ -46,5 +47,10 @@ public class ShutdownAction extends MaAction {
             }
         }).start();
         return result;
+    }
+
+    @Override
+    public String getName() {
+        return "shutdown";
     }
 }

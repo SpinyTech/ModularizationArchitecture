@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
+import com.provider.ProviderInit;
 import com.spinytech.macore.multiprocess.BaseApplicationLogic;
 import com.spinytech.macore.multiprocess.PriorityLogicWrapper;
 import com.spinytech.macore.router.LocalRouter;
@@ -28,13 +30,15 @@ public abstract class MaApplication extends Application {
     private static MaApplication sInstance;
     private ArrayList<PriorityLogicWrapper> mLogicList;
     private HashMap<String, ArrayList<PriorityLogicWrapper>> mLogicClassMap;
+    private HashMap<String, ArrayList<MaProvider>> mProviderMap;
+    private HashMap<String, ArrayList<MaAction>> mActionMap;
 
     @CallSuper
     @Override
     public void onCreate() {
         super.onCreate();
         sInstance = this;
-        Logger.d(TAG,"Application onCreate start: "+System.currentTimeMillis());
+        Logger.d(TAG, "Application onCreate start: " + System.currentTimeMillis());
         init();
         startWideRouter();
         initializeLogic();
@@ -46,15 +50,28 @@ public abstract class MaApplication extends Application {
             for (PriorityLogicWrapper priorityLogicWrapper : mLogicList) {
                 if (null != priorityLogicWrapper && null != priorityLogicWrapper.instance) {
                     priorityLogicWrapper.instance.onCreate();
+                    String precessName = ProcessUtil.getProcessName(this, ProcessUtil.getMyProcessId());
+                    Logger.d(TAG, precessName);
+                    if(mProviderMap.get(precessName)!= null){
+                        for (MaProvider maProvider : mProviderMap.get(precessName)) {
+                            LocalRouter.getInstance(this).registerProvider(maProvider.getName(), maProvider);
+                            for (MaAction maAction : mActionMap.get(precessName + "_" + maProvider.getName())) {
+                                maProvider.registerAction(maAction.getName(), maAction);
+                            }
+                        }
+                    }
                 }
             }
         }
-        Logger.d(TAG,"Application onCreate end: "+System.currentTimeMillis());
+        Logger.d(TAG, "Application onCreate end: " + System.currentTimeMillis());
     }
 
     private void init() {
         LocalRouter.getInstance(this);
         mLogicClassMap = new HashMap<>();
+        mProviderMap = new HashMap<>();
+        mActionMap = new HashMap<>();
+        ProviderInit.init(mProviderMap, mActionMap);
     }
 
     protected void startWideRouter() {
@@ -168,7 +185,7 @@ public abstract class MaApplication extends Application {
         }
     }
 
-    public static MaApplication getMaApplication(){
+    public static MaApplication getMaApplication() {
         return sInstance;
     }
 }

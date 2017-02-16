@@ -42,4 +42,9 @@ public class ErrorAction extends MaAction {
         return result;
     }
 
+    @Override
+    public String getName() {
+        return "error";
+    }
+
 }

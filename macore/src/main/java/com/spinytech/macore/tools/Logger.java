@@ -12,7 +12,7 @@ public class Logger {
     public final static int DEBUG = 4;
     public final static int VERBOSE = 5;
 
-    public static int LOG_LEVEL = ERROR;
+    public static int LOG_LEVEL = VERBOSE;
 
 
     public static void e(String tag, String msg) {

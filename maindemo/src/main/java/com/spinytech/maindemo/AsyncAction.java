@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.linked.annotion.Action;
 import com.spinytech.macore.MaAction;
 import com.spinytech.macore.MaActionResult;
 
@@ -12,7 +13,7 @@ import java.util.HashMap;
 /**
  * Created by wanglei on 2016/12/28.
  */
-
+@Action(processName = "com.spinytech.maindemo", providerName = "main")
 public class AsyncAction extends MaAction {
 
     @Override
@@ -28,13 +29,13 @@ public class AsyncAction extends MaAction {
             e.printStackTrace();
         }
         String temp = "";
-        if(!TextUtils.isEmpty(requestData.get("1"))){
-            temp+=requestData.get("1");
+        if (!TextUtils.isEmpty(requestData.get("1"))) {
+            temp += requestData.get("1");
         }
-        if(!TextUtils.isEmpty(requestData.get("2"))){
-            temp+=requestData.get("2");
+        if (!TextUtils.isEmpty(requestData.get("2"))) {
+            temp += requestData.get("2");
         }
-        Log.e("AsyncAction",temp);
+        Log.e("AsyncAction", temp);
         MaActionResult result = new MaActionResult.Builder()
                 .code(MaActionResult.CODE_SUCCESS)
                 .msg("success")
@@ -42,5 +43,10 @@ public class AsyncAction extends MaAction {
                 .result(null)
                 .build();
         return result;
+    }
+
+    @Override
+    public String getName() {
+        return "async";
     }
 }

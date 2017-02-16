@@ -11,4 +11,5 @@ import java.util.HashMap;
 public abstract class MaAction {
     public abstract boolean isAsync(Context context, HashMap<String,String> requestData);
     public abstract MaActionResult invoke(Context context, HashMap<String,String> requestData);
+    public abstract String getName();
 }
