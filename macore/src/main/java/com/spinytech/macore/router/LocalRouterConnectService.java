@@ -48,8 +48,7 @@ public class LocalRouterConnectService extends Service {
                         .Builder(getApplicationContext())
                         .json(routerRequest)
                         .build();
-                RouterResponse routerResponse = localRouter.route(LocalRouterConnectService.this,routerRequest1);
-                return routerResponse.get();
+                return localRouter.wideRoute(LocalRouterConnectService.this,routerRequest1);
             } catch (Exception e) {
                 e.printStackTrace();
                 return new MaActionResult.Builder().msg(e.getMessage()).build();

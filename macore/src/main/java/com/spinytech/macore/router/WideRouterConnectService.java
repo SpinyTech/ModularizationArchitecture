@@ -76,7 +76,7 @@ public final class WideRouterConnectService extends Service {
         public MaActionResult route(String domain, String routerRequest) {
             try {
                 return WideRouter.getInstance(MaApplication.getMaApplication())
-                        .route(domain, routerRequest).mResult;
+                        .route(domain, routerRequest);
             } catch (Exception e) {
                 e.printStackTrace();
                 return new MaActionResult.Builder()

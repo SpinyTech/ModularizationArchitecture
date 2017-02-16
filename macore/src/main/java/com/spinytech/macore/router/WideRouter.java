@@ -193,27 +193,22 @@ public class WideRouter {
         }
     }
 
-    public RouterResponse route(String domain, String routerRequest) {
+    public MaActionResult route(String domain, String routerRequest) {
         Logger.d(TAG, "Process:" + PROCESS_NAME + "\nWide route start: " + System.currentTimeMillis());
-        RouterResponse routerResponse = new RouterResponse();
         if (mIsStopping) {
 
             MaActionResult result = new MaActionResult.Builder()
                     .code(MaActionResult.CODE_WIDE_STOPPING)
                     .msg("Wide router is stopping.")
                     .build();
-            routerResponse.mIsAsync = true;
-            routerResponse.mResult = result;
-            return routerResponse;
+            return result;
         }
         if (PROCESS_NAME.equals(domain)) {
             MaActionResult result = new MaActionResult.Builder()
                     .code(MaActionResult.CODE_TARGET_IS_WIDE)
                     .msg("Domain can not be " + PROCESS_NAME + ".")
                     .build();
-            routerResponse.mIsAsync = true;
-            routerResponse.mResult = result;
-            return routerResponse;
+            return result;
         }
         ILocalRouterAIDL target = mLocalRouterAIDLMap.get(domain);
         if (null == target) {
@@ -222,10 +217,8 @@ public class WideRouter {
                         .code(MaActionResult.CODE_ROUTER_NOT_REGISTER)
                         .msg("The " + domain + " has not registered.")
                         .build();
-                routerResponse.mIsAsync = false;
-                routerResponse.mResult = result;
                 Logger.d(TAG, "Process:" + PROCESS_NAME + "\nLocal not register end: " + System.currentTimeMillis());
-                return routerResponse;
+                return result;
             } else {
                 // Wait to bind the target process connect service, timeout is 30s.
                 Logger.d(TAG, "Process:" + PROCESS_NAME + "\nBind local router start: " + System.currentTimeMillis());
@@ -248,27 +241,24 @@ public class WideRouter {
                                 .code(MaActionResult.CODE_CANNOT_BIND_LOCAL)
                                 .msg("Can not bind " + domain + ", time out.")
                                 .build();
-                        routerResponse.mResult = result;
-                        return routerResponse;
+                        return result;
                     }
                 }
             }
         }
         try {
             Logger.d(TAG, "Process:" + PROCESS_NAME + "\nWide target start: " + System.currentTimeMillis());
-            MaActionResult resultString = target.route(routerRequest);
-            routerResponse.mResult = resultString;
+            MaActionResult maActionResult = target.route(routerRequest);
             Logger.d(TAG, "Process:" + PROCESS_NAME + "\nWide route end: " + System.currentTimeMillis());
+            return maActionResult;
         } catch (RemoteException e) {
             e.printStackTrace();
             MaActionResult result = new MaActionResult.Builder()
                     .code(MaActionResult.CODE_REMOTE_EXCEPTION)
                     .msg(e.getMessage())
                     .build();
-            routerResponse.mResult = result;
-            return routerResponse;
+            return result;
         }
-        return routerResponse;
     }
 
 }
