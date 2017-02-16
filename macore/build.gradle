@@ -32,4 +32,29 @@ dependencies {
     compile project(':annotation')
 }
 
-apply from: "bintray.gradle"
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'modularization-architecture'
+
+    publishedGroupId = 'com.github.wutongke.modularization'
+    libraryName = 'Modularization'
+    artifact = 'modularization'
+
+    libraryDescription = 'Modularization architecture'
+
+    siteUrl = 'https://github.com/wutongke/ModularizationArchitecture'
+    gitUrl = 'https://github.com/wutongke/ModularizationArchitecture.git'
+
+    libraryVersion = '1.0.0'
+
+    developerId = 'wutongke'
+    developerName = 'wutongke'
+    developerEmail = 'ximu470791413@163.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'

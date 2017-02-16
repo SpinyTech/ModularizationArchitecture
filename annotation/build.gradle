@@ -6,3 +6,32 @@ dependencies {
 
 sourceCompatibility = "1.7"
 targetCompatibility = "1.7"
+
+
+//for upload
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'modularization-architecture-annotation'
+
+    publishedGroupId = 'com.github.wutongke.modularization'
+    libraryName = 'Annotation'
+    artifact = 'annotation'
+
+    libraryDescription = 'Modularization architecture'
+
+    siteUrl = 'https://github.com/wutongke/ModularizationArchitecture'
+    gitUrl = 'https://github.com/wutongke/ModularizationArchitecture.git'
+
+    libraryVersion = '1.0.0'
+
+    developerId = 'wutongke'
+    developerName = 'wutongke'
+    developerEmail = 'ximu470791413@163.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
