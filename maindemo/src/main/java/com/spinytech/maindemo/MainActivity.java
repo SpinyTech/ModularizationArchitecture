@@ -5,10 +5,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
-import com.spinytech.macore.MaActionResult;
+import com.spinytech.macore.router.MaActionResult;
 import com.spinytech.macore.MaApplication;
 import com.spinytech.macore.router.LocalRouter;
-import com.spinytech.macore.router.RouterRequest;
+import com.spinytech.macore.router.RouterRequestUtil;
+import com.spinytech.macore.Song;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
@@ -25,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 try {
                     LocalRouter.getInstance(MaApplication.getMaApplication())
-                            .route(MainActivity.this, RouterRequest.obtain(MainActivity.this).provider("main")
+                            .route(MainActivity.this, RouterRequestUtil.obtain(MainActivity.this).provider("main")
                                     .action("sync")
                                     .data("1", "Hello")
                                     .data("2", "World"))
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 try {
                     LocalRouter.getInstance(MaApplication.getMaApplication())
-                            .route(MainActivity.this, RouterRequest.obtain(MainActivity.this).provider("main")
+                            .route(MainActivity.this, RouterRequestUtil.obtain(MainActivity.this).provider("main")
                                     .action("async")
                                     .data("1", "Hello")
                                     .data("2", "World"))
@@ -84,11 +85,13 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 try {
                     LocalRouter.getInstance(MaApplication.getMaApplication())
-                            .route(MainActivity.this, RouterRequest.obtain(MainActivity.this)
+                            .route(MainActivity.this, RouterRequestUtil.obtain(MainActivity.this)
                                     .domain("com.spinytech.maindemo:music")
                                     .provider("music")
-                                    .action("play"))
-                            .subscribeOn(Schedulers.from(ThreadPool.getThreadPoolSingleton()))
+                                    .action("play")
+                                    .reqeustObject(new Song("see you again"))
+                            )
+                            .subscribeOn(AndroidSchedulers.mainThread())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(new Consumer<MaActionResult>() {
                                 @Override
@@ -111,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 try {
                     LocalRouter.getInstance(MaApplication.getMaApplication())
-                            .route(MainActivity.this, RouterRequest.obtain(MainActivity.this)
+                            .route(MainActivity.this, RouterRequestUtil.obtain(MainActivity.this)
                                     .domain("com.spinytech.maindemo:music")
                                     .provider("music")
                                     .action("stop"))
@@ -140,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 try {
                     LocalRouter.getInstance(MaApplication.getMaApplication())
-                            .route(MainActivity.this, RouterRequest.obtain(MainActivity.this)
+                            .route(MainActivity.this, RouterRequestUtil.obtain(MainActivity.this)
                                     .domain("com.spinytech.maindemo:music")
                                     .provider("music")
                                     .action("shutdown"))
@@ -173,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 try {
                     LocalRouter.getInstance(MaApplication.getMaApplication())
-                            .route(MainActivity.this, RouterRequest.obtain(MainActivity.this)
+                            .route(MainActivity.this, RouterRequestUtil.obtain(MainActivity.this)
                                     .domain("com.spinytech.maindemo:pic")
                                     .provider("pic")
                                     .action("pic")
@@ -202,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 try {
                     LocalRouter.getInstance(MaApplication.getMaApplication())
-                            .route(MainActivity.this, RouterRequest.obtain(MainActivity.this)
+                            .route(MainActivity.this, RouterRequestUtil.obtain(MainActivity.this)
                                     .domain("com.spinytech.maindemo:pic")
                                     .provider("pic")
                                     .action("pic")
@@ -230,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 try {
                     LocalRouter.getInstance(MaApplication.getMaApplication())
-                            .route(MainActivity.this, RouterRequest.obtain(MainActivity.this)
+                            .route(MainActivity.this, RouterRequestUtil.obtain(MainActivity.this)
                                     .provider("web")
                                     .action("web")
                             );

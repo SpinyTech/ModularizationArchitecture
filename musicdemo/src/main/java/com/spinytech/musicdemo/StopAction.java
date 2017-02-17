@@ -5,24 +5,23 @@ import android.content.Intent;
 
 import com.linked.annotion.Action;
 import com.spinytech.macore.MaAction;
-import com.spinytech.macore.MaActionResult;
+import com.spinytech.macore.router.MaActionResult;
+import com.spinytech.macore.router.RouterRequest;
 import com.spinytech.macore.tools.Logger;
-
-import java.util.HashMap;
 
 /**
  * Created by wanglei on 2016/12/28.
  */
 @Action(processName = "com.spinytech.maindemo:music", providerName = "music")
-public class StopAction extends MaAction {
+public class StopAction implements MaAction {
 
     @Override
-    public boolean isAsync(Context context, HashMap<String, String> requestData) {
+    public boolean isAsync(Context context, RouterRequest requestData) {
         return false;
     }
 
     @Override
-    public MaActionResult invoke(Context context, HashMap<String, String> requestData) {
+    public MaActionResult invoke(Context context, RouterRequest requestData) {
         Intent intent = new Intent(context, MusicService.class);
         intent.putExtra("command", "stop");
         context.startService(intent);

@@ -1,4 +1,3 @@
-package com.spinytech.macore;
-import com.spinytech.macore.MaActionResult;
+package com.spinytech.macore.router;
 // Declare any non-default types here with import statements
 parcelable MaActionResult;

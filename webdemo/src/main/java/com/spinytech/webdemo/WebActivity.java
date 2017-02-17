@@ -10,10 +10,12 @@ import android.webkit.WebViewClient;
 import com.spinytech.macore.MaApplication;
 import com.spinytech.macore.router.LocalRouter;
 import com.spinytech.macore.router.RouterRequest;
+import com.spinytech.macore.router.RouterRequestUtil;
 
 public class WebActivity extends AppCompatActivity {
 
     private WebView mContentWv;
+    private static String protocole = "wutongke://";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,10 +34,10 @@ public class WebActivity extends AppCompatActivity {
 
 
     public void dispatchAction(String url) {
-        if (url.indexOf("your_protocol://") >= 0) {
-            String command = url.substring("your_protocol://".length());
+        if (url.indexOf(protocole) >= 0) {
+            String command = url.substring(protocole.length());
             try {
-                LocalRouter.getInstance(MaApplication.getMaApplication()).route(this, new RouterRequest.Builder(this).url(command).build());
+                LocalRouter.getInstance(MaApplication.getMaApplication()).route(this, RouterRequestUtil.url(command));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -45,7 +47,7 @@ public class WebActivity extends AppCompatActivity {
     class MyWebViewClient extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            if (!TextUtils.isEmpty(url) && url.startsWith("your_protocol://")) {
+            if (!TextUtils.isEmpty(url) && url.startsWith(protocole)) {
                 dispatchAction(url);
             } else {
                 mContentWv.loadUrl(url);

@@ -6,22 +6,21 @@ import android.content.Intent;
 
 import com.linked.annotion.Action;
 import com.spinytech.macore.MaAction;
-import com.spinytech.macore.MaActionResult;
-
-import java.util.HashMap;
+import com.spinytech.macore.router.MaActionResult;
+import com.spinytech.macore.router.RouterRequest;
 
 /**
  * Created by wanglei on 2017/1/4.
  */
 @Action(processName = "com.spinytech.maindemo", providerName = "web")
-public class WebAction extends MaAction {
+public class WebAction implements MaAction {
     @Override
-    public boolean isAsync(Context context, HashMap<String, String> requestData) {
+    public boolean isAsync(Context context, RouterRequest requestData) {
         return false;
     }
 
     @Override
-    public MaActionResult invoke(Context context, HashMap<String, String> requestData) {
+    public MaActionResult invoke(Context context, RouterRequest requestData) {
         if(context instanceof Activity){
             Intent i = new Intent(context, WebActivity.class);
             context.startActivity(i);

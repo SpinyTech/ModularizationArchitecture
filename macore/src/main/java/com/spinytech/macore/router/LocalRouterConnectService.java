@@ -7,8 +7,6 @@ import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.spinytech.macore.ILocalRouterAIDL;
-import com.spinytech.macore.MaActionResult;
 import com.spinytech.macore.MaApplication;
 
 /**
@@ -32,22 +30,16 @@ public class LocalRouterConnectService extends Service {
     ILocalRouterAIDL.Stub stub = new ILocalRouterAIDL.Stub() {
 
         @Override
-        public boolean checkResponseAsync(String routerRequest) throws RemoteException {
+        public boolean checkResponseAsync(RouterRequest routerRequest) throws RemoteException {
             return LocalRouter.getInstance(MaApplication.getMaApplication()).
-                    answerWiderAsync(new RouterRequest
-                            .Builder(getApplicationContext())
-                            .json(routerRequest)
-                            .build());
+                    answerWiderAsync(routerRequest);
         }
 
         @Override
-        public MaActionResult route(String routerRequest) {
+        public MaActionResult route(RouterRequest routerRequest) {
             try {
                 LocalRouter localRouter = LocalRouter.getInstance(MaApplication.getMaApplication());
-                RouterRequest routerRequest1 = new RouterRequest
-                        .Builder(getApplicationContext())
-                        .json(routerRequest)
-                        .build();
+                RouterRequest routerRequest1 = routerRequest;
                 return localRouter.wideRoute(LocalRouterConnectService.this,routerRequest1);
             } catch (Exception e) {
                 e.printStackTrace();

@@ -2,14 +2,17 @@ package com.spinytech.macore;
 
 import android.content.Context;
 
-import java.util.HashMap;
+import com.spinytech.macore.router.MaActionResult;
+import com.spinytech.macore.router.RouterRequest;
 
 /**
  * Created by wanglei on 2016/11/29.
  */
 
-public abstract class MaAction {
-    public abstract boolean isAsync(Context context, HashMap<String,String> requestData);
-    public abstract MaActionResult invoke(Context context, HashMap<String,String> requestData);
-    public abstract String getName();
+public interface MaAction<T> {
+    boolean isAsync(Context context, RouterRequest<T> routerRequest);
+
+    MaActionResult invoke(Context context, RouterRequest<T> routerRequest);
+
+    String getName();
 }

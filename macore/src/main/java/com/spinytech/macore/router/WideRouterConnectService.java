@@ -6,8 +6,6 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
 
-import com.spinytech.macore.IWideRouterAIDL;
-import com.spinytech.macore.MaActionResult;
 import com.spinytech.macore.MaApplication;
 import com.spinytech.macore.tools.Logger;
 
@@ -66,14 +64,14 @@ public final class WideRouterConnectService extends Service {
     IWideRouterAIDL.Stub stub = new IWideRouterAIDL.Stub() {
 
         @Override
-        public boolean checkResponseAsync(String domain, String routerRequest) throws RemoteException {
+        public boolean checkResponseAsync(String domain, RouterRequest routerRequest) throws RemoteException {
             return
                     WideRouter.getInstance(MaApplication.getMaApplication())
                             .answerLocalAsync(domain, routerRequest);
         }
 
         @Override
-        public MaActionResult route(String domain, String routerRequest) {
+        public MaActionResult route(String domain, RouterRequest routerRequest) {
             try {
                 return WideRouter.getInstance(MaApplication.getMaApplication())
                         .route(domain, routerRequest);

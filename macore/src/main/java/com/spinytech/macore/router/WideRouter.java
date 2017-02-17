@@ -9,8 +9,6 @@ import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.spinytech.macore.ILocalRouterAIDL;
-import com.spinytech.macore.MaActionResult;
 import com.spinytech.macore.MaApplication;
 import com.spinytech.macore.tools.Logger;
 import com.spinytech.macore.tools.ProcessUtil;
@@ -170,7 +168,7 @@ public class WideRouter {
         }).start();
     }
 
-    boolean answerLocalAsync(String domain, String routerRequest) {
+    boolean answerLocalAsync(String domain, RouterRequest routerRequest) {
         ILocalRouterAIDL target = mLocalRouterAIDLMap.get(domain);
         if (target == null) {
             ConnectServiceWrapper connectServiceWrapper = sLocalRouterClasses.get(domain);
@@ -193,7 +191,7 @@ public class WideRouter {
         }
     }
 
-    public MaActionResult route(String domain, String routerRequest) {
+    public MaActionResult route(String domain, RouterRequest routerRequest) {
         Logger.d(TAG, "Process:" + PROCESS_NAME + "\nWide route start: " + System.currentTimeMillis());
         if (mIsStopping) {
 

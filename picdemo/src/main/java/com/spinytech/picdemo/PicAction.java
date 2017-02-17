@@ -6,23 +6,22 @@ import android.content.Intent;
 
 import com.linked.annotion.Action;
 import com.spinytech.macore.MaAction;
-import com.spinytech.macore.MaActionResult;
-
-import java.util.HashMap;
+import com.spinytech.macore.router.MaActionResult;
+import com.spinytech.macore.router.RouterRequest;
 
 /**
  * Created by wanglei on 2017/1/4.
  */
 @Action(processName = "com.spinytech.maindemo:pic", providerName = "pic")
-public class PicAction extends MaAction {
+public class PicAction implements MaAction {
     @Override
-    public boolean isAsync(Context context, HashMap<String, String> requestData) {
+    public boolean isAsync(Context context, RouterRequest requestData) {
         return false;
     }
 
     @Override
-    public MaActionResult invoke(Context context, HashMap<String, String> requestData) {
-        String isBigString = requestData.get("is_big");
+    public MaActionResult invoke(Context context, RouterRequest requestData) {
+        String isBigString = (String) requestData.getData().get("is_big");
         boolean isBig = "1".equals(isBigString);
         if(context instanceof Activity){
             Intent i = new Intent(context, PicActivity.class);

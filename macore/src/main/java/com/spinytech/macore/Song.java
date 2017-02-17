@@ -1,4 +1,4 @@
-package com.spinytech.musicdemo;
+package com.spinytech.macore;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -7,14 +7,14 @@ import android.os.Parcelable;
  * Created by erfli on 2/14/17.
  */
 
-public class Person implements Parcelable {
+public class Song implements Parcelable {
     public String name;
 
-    public Person(String name) {
+    public Song(String name) {
         this.name = name;
     }
 
-    protected Person(Parcel in) {
+    protected Song(Parcel in) {
         name = in.readString();
     }
 
@@ -28,15 +28,15 @@ public class Person implements Parcelable {
         return 0;
     }
 
-    public static final Creator<Person> CREATOR = new Creator<Person>() {
+    public static final Creator<Song> CREATOR = new Creator<Song>() {
         @Override
-        public Person createFromParcel(Parcel in) {
-            return new Person(in);
+        public Song createFromParcel(Parcel in) {
+            return new Song(in);
         }
 
         @Override
-        public Person[] newArray(int size) {
-            return new Person[size];
+        public Song[] newArray(int size) {
+            return new Song[size];
         }
     };
 }

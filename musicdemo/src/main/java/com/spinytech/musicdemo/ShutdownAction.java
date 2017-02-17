@@ -6,25 +6,24 @@ import android.util.Log;
 
 import com.linked.annotion.Action;
 import com.spinytech.macore.MaAction;
-import com.spinytech.macore.MaActionResult;
+import com.spinytech.macore.router.MaActionResult;
 import com.spinytech.macore.MaApplication;
 import com.spinytech.macore.router.LocalRouter;
-
-import java.util.HashMap;
+import com.spinytech.macore.router.RouterRequest;
 
 /**
  * Created by wanglei on 2016/12/28.
  */
 @Action(processName = "com.spinytech.maindemo:music", providerName = "music")
-public class ShutdownAction extends MaAction {
+public class ShutdownAction implements MaAction {
 
     @Override
-    public boolean isAsync(Context context, HashMap<String, String> requestData) {
+    public boolean isAsync(Context context, RouterRequest requestData) {
         return true;
     }
 
     @Override
-    public MaActionResult invoke(Context context, HashMap<String, String> requestData) {
+    public MaActionResult invoke(Context context, RouterRequest requestData) {
         MaActionResult result = new MaActionResult.Builder()
                 .code(MaActionResult.CODE_SUCCESS)
                 .msg("success")

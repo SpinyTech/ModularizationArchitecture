@@ -1,4 +1,4 @@
-package com.spinytech.macore;
+package com.spinytech.macore.router;
 
 
 import android.os.Parcel;
@@ -23,6 +23,10 @@ public class MaActionResult<T> implements Parcelable {
     private String msg;
     private String data;
     private T result;
+
+    MaActionResult(){
+
+    }
 
     private MaActionResult(Builder builder) {
         code = builder.code;

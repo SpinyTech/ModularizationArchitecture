@@ -2,13 +2,14 @@ package com.spinytech.macore;
 
 import android.content.Context;
 
-import java.util.HashMap;
+import com.spinytech.macore.router.MaActionResult;
+import com.spinytech.macore.router.RouterRequest;
 
 /**
  * Created by wanglei on 2016/12/28.
  */
 
-public class ErrorAction extends MaAction {
+public class ErrorAction implements MaAction {
 
     private static final String DEFAULT_MESSAGE = "Something was really wrong. Ha ha!";
     private int mCode;
@@ -27,12 +28,12 @@ public class ErrorAction extends MaAction {
     }
 
     @Override
-    public boolean isAsync(Context context, HashMap<String, String> requestData) {
+    public boolean isAsync(Context context, RouterRequest requestData) {
         return mAsync;
     }
 
     @Override
-    public MaActionResult invoke(Context context, HashMap<String, String> requestData) {
+    public MaActionResult invoke(Context context, RouterRequest requestData) {
         MaActionResult result = new MaActionResult.Builder()
                 .code(mCode)
                 .msg(mMessage)
