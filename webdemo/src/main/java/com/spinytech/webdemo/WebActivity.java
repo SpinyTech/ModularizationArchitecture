@@ -9,7 +9,6 @@ import android.webkit.WebViewClient;
 
 import com.spinytech.macore.MaApplication;
 import com.spinytech.macore.router.LocalRouter;
-import com.spinytech.macore.router.RouterRequest;
 import com.spinytech.macore.router.RouterRequestUtil;
 
 public class WebActivity extends AppCompatActivity {
@@ -37,7 +36,7 @@ public class WebActivity extends AppCompatActivity {
         if (url.indexOf(protocole) >= 0) {
             String command = url.substring(protocole.length());
             try {
-                LocalRouter.getInstance(MaApplication.getMaApplication()).route(this, RouterRequestUtil.url(command));
+                LocalRouter.getInstance(MaApplication.getMaApplication()).rxRoute(this, RouterRequestUtil.url(command));
             } catch (Exception e) {
                 e.printStackTrace();
             }

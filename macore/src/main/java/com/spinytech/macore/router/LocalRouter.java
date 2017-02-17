@@ -114,20 +114,20 @@ public class LocalRouter {
     }
 
 
-    public MaActionResult wideRoute(Context context, @NonNull RouterRequest routerRequest) throws Exception {
+    public MaActionResult route(Context context, @NonNull RouterRequest routerRequest) throws Exception {
         RouteResultWrap routeResultWrap = new RouteResultWrap();
-        route(context, routerRequest, routeResultWrap, RouteResultType.MA_ACTION_RESULT);
+        rxRoute(context, routerRequest, routeResultWrap, RouteResultType.MA_ACTION_RESULT);
         return routeResultWrap.maActionResult;
     }
 
-    public Observable<MaActionResult> route(Context context, @NonNull RouterRequest routerRequest) throws Exception {
+    public Observable<MaActionResult> rxRoute(Context context, @NonNull RouterRequest routerRequest) throws Exception {
         RouteResultWrap routeResultWrap= new RouteResultWrap();
-        route(context, routerRequest, routeResultWrap, RouteResultType.OBSERVABLE);
+        rxRoute(context, routerRequest, routeResultWrap, RouteResultType.OBSERVABLE);
         return routeResultWrap.maActionResultObservable;
     }
 
-    private void route(Context context, @NonNull RouterRequest routerRequest, RouteResultWrap routeResultWrap, RouteResultType type) throws Exception {
-        Logger.d(TAG, "Process:" + mProcessName + "\nLocal route start: " + System.currentTimeMillis());
+    private void rxRoute(Context context, @NonNull RouterRequest routerRequest, RouteResultWrap routeResultWrap, RouteResultType type) throws Exception {
+        Logger.d(TAG, "Process:" + mProcessName + "\nLocal rxRoute start: " + System.currentTimeMillis());
         // Local request
         if (mProcessName.equals(routerRequest.getDomain())) {
             Logger.d(TAG, "Process:" + mProcessName + "\nLocal find action start: " + System.currentTimeMillis());

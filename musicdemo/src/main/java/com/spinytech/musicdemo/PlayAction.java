@@ -31,7 +31,6 @@ public class PlayAction implements MaAction<Song> {
         MaActionResult result = new MaActionResult.Builder()
                 .code(MaActionResult.CODE_SUCCESS)
                 .msg("play success")
-                .data("lll")
                 .result(new Song("lili"))
                 .build();
         Handler handler = new Handler(context.getMainLooper());

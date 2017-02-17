@@ -40,7 +40,7 @@ public class LocalRouterConnectService extends Service {
             try {
                 LocalRouter localRouter = LocalRouter.getInstance(MaApplication.getMaApplication());
                 RouterRequest routerRequest1 = routerRequest;
-                return localRouter.wideRoute(LocalRouterConnectService.this,routerRequest1);
+                return localRouter.route(LocalRouterConnectService.this,routerRequest1);
             } catch (Exception e) {
                 e.printStackTrace();
                 return new MaActionResult.Builder().msg(e.getMessage()).build();

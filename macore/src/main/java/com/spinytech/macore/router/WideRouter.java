@@ -192,7 +192,7 @@ public class WideRouter {
     }
 
     public MaActionResult route(String domain, RouterRequest routerRequest) {
-        Logger.d(TAG, "Process:" + PROCESS_NAME + "\nWide route start: " + System.currentTimeMillis());
+        Logger.d(TAG, "Process:" + PROCESS_NAME + "\nWide rxRoute start: " + System.currentTimeMillis());
         if (mIsStopping) {
 
             MaActionResult result = new MaActionResult.Builder()
@@ -247,7 +247,7 @@ public class WideRouter {
         try {
             Logger.d(TAG, "Process:" + PROCESS_NAME + "\nWide target start: " + System.currentTimeMillis());
             MaActionResult maActionResult = target.route(routerRequest);
-            Logger.d(TAG, "Process:" + PROCESS_NAME + "\nWide route end: " + System.currentTimeMillis());
+            Logger.d(TAG, "Process:" + PROCESS_NAME + "\nWide rxRoute end: " + System.currentTimeMillis());
             return maActionResult;
         } catch (RemoteException e) {
             e.printStackTrace();
