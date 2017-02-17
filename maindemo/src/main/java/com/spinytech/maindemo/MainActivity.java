@@ -89,9 +89,9 @@ public class MainActivity extends AppCompatActivity {
                                     .domain("com.spinytech.maindemo:music")
                                     .provider("music")
                                     .action("play")
-                                    .reqeustObject(new Song("see you again"))
+                                    .reqeustObject(new Song("see you"))
                             )
-                            .subscribeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.from(ThreadPool.getThreadPoolSingleton()))
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(new Consumer<MaActionResult>() {
                                 @Override
