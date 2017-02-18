@@ -1,7 +1,11 @@
 ## 说明
-从[SpinyTech/ModularizationArchitecture](https://github.com/SpinyTech/ModularizationArchitecture)fork的代码，关于架构说明可以参考
+从[SpinyTech/ModularizationArchitecture](https://github.com/SpinyTech/ModularizationArchitecture)fork的代码
+
+关于架构说明可以参考
 [Android架构思考(模块化、多进程)](http://blog.spinytech.com/2016/12/28/android_modularization/)
-关于这个fork版本的说明如下参考：[Android组件化之通信（多模块，多进程）](http://www.jianshu.com/p/1fc5f8a2d703)
+
+关于这个fork版本增加了一些新的特性，方便使用，文档地址：[Android组件化之通信（多模块，多进程）](http://www.jianshu.com/p/1fc5f8a2d703)
+
 ## 使用教程
 项目地址：[https://github.com/wutongke/ModularizationArchitecture](https://github.com/wutongke/ModularizationArchitecture)
 ### 1 在项目中集成
