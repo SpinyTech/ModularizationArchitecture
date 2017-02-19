@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
         findViewById(R.id.main_local_async_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -242,6 +243,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
     }
 
 }

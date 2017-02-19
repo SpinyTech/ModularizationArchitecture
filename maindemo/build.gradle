@@ -34,8 +34,8 @@ dependencies {
         compile project(':macore')
         apt project(':compile')
     }else{
-        apt 'com.github.wutongke.modularization:compile:1.0.1'
-        compile 'com.github.wutongke.modularization:macore:1.0.1'
+        apt 'com.github.wutongke.modularization:compile:1.1.1'
+        compile 'com.github.wutongke.modularization:macore:1.1.1'
     }
     compile project(':musicdemo')
     compile project(':picdemo')
