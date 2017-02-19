@@ -6,22 +6,104 @@
 
 关于这个fork版本增加了一些新的特性，方便使用，文档地址：[Android组件化之通信（多模块，多进程）](http://www.jianshu.com/p/1fc5f8a2d703)
 
-## 使用教程
-项目地址：[https://github.com/wutongke/ModularizationArchitecture](https://github.com/wutongke/ModularizationArchitecture)
-### 1 在项目中集成
-1.1 在project的build.gradle中设置maven地址:
+## 此fork版本的特性
+### 1 进程间通信数据格式的修改
+请求数据```RouterResquest``` 和返回数据```MaActionResult```分别实现了Parcelable接口，并且分别提供了两个可以自定义的成员变量```requestObject```和```result```，用户在建立请求数据```RouterResquest``` 和返回数据```MaActionResult```可以把自定义的数据传递进去，需要注意的是传递的自定义类型也要实现Parcelable接口。
 ```
-allprojects {
-    repositories {
-        jcenter()
-        maven{
-            url 'https://dl.bintray.com/wutongke/maven'
-        }
+//自定义数据
+public class Song implements Parcelable {
+    public String name;
+
+    public Song(String name) {
+        this.name = name;
     }
+
+    protected Song(Parcel in) {
+        name = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Song> CREATOR = new Creator<Song>() {
+        @Override
+        public Song createFromParcel(Parcel in) {
+            return new Song(in);
+        }
+
+        @Override
+        public Song[] newArray(int size) {
+            return new Song[size];
+        }
+    };
 }
 ```
 
-dependencies块中支持apt：
+```
+//RouterResquest中设置了自定义类型Song
+RouterRequestUtil.obtain(MainActivity.this)
+                                    .domain("com.spinytech.maindemo:music")
+                                    .provider("music")
+                                    .action("play")
+                                    .reqeustObject(new Song("see you"))
+                            )
+//MaActionResult中设置自定义类型Song
+MaActionResult result = new MaActionResult.Builder()
+                .code(MaActionResult.CODE_SUCCESS)
+                .msg("play success")
+                .result(new Song("lili"))
+                .build();
+```
+### 2 Provider、Action自动生成
+```
+// 注解Provider，程序运行后将自动注册MusicProvider到com.spinytech.maindemo:music到Router
+@Provider(processName = "com.spinytech.maindemo:music")
+public class MusicProvider extends MaProvider{
+    @Override
+    protected String getName() {
+        return "music";
+    }
+}
+// 注解Action，程序运行后将自动注册PlayAction到Provider
+@Action(processName = "com.spinytech.maindemo:music", providerName = "music")
+public class PlayAction implements MaAction<Song>
+```
+### 3 Rxjava 的引入
+引入Rxjava之后，修改LocalRoute的route方法，使之返回```Observable<MaActionResult>```，在调用时可以非常方便地使用Rxjava切换线程：
+```
+ LocalRouter.getInstance(MaApplication.getMaApplication())
+                .rxRoute(MainActivity.this, RouterRequestUtil.obtain(MainActivity.this)
+                        .domain("com.spinytech.maindemo:pic")
+                        .provider("pic")
+                        .action("pic")
+                        .data("is_big", "0"))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.from(ThreadPool.getThreadPoolSingleton()))
+                .subscribe(new Consumer<MaActionResult>() {
+                    @Override
+                    public void accept(MaActionResult maActionResult) throws Exception {
+                        Toast.makeText(MainActivity.this, maActionResult.getMsg(), Toast.LENGTH_SHORT).show();
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Toast.makeText(MainActivity.this, "error", Toast.LENGTH_SHORT).show();
+                    }
+                });
+```
+
+
+## 使用教程
+项目地址：[https://github.com/wutongke/ModularizationArchitecture](https://github.com/wutongke/ModularizationArchitecture)
+### 1 在项目中集成
+1.1 在project的build.gradle中设置dependencies块中支持apt：
 ```
 classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
 ```
@@ -229,6 +311,9 @@ MaActionResult result = new MaActionResult.Builder()
                 .result(new Song("lili"))
                 .build();
 ```
+
+## 其它
+注意：在demo的gradle.properties中可以配置Local属性，从而根据需要设置使用本地的library，还是远端的library，更改Local后注意sync。
 ## License
 
 
