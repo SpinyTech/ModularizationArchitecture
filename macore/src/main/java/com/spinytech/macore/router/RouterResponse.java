@@ -51,19 +51,25 @@ public class RouterResponse {
     public String get() throws Exception {
         if (mIsAsync) {
             mResultString = mAsyncResponse.get(mTimeOut, TimeUnit.MILLISECONDS);
-            if (!mHasGet) {
-                try {
-                    JSONObject jsonObject = new JSONObject(mResultString);
-                    this.mCode = jsonObject.getInt("code");
-                    this.mMessage = jsonObject.getString("msg");
-                    this.mData = jsonObject.getString("data");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                mHasGet = true;
-            }
+            parseResult();
+        }else{
+            parseResult();
         }
         return mResultString;
+    }
+
+    private void parseResult(){
+        if (!mHasGet) {
+            try {
+                JSONObject jsonObject = new JSONObject(mResultString);
+                this.mCode = jsonObject.getInt("code");
+                this.mMessage = jsonObject.getString("msg");
+                this.mData = jsonObject.getString("data");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            mHasGet = true;
+        }
     }
 
     public int getCode() throws Exception {
