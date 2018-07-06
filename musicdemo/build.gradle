@@ -1,4 +1,9 @@
-apply plugin: 'com.android.library'
+appModuleMusicDemo = rootProject.ext.appModuleMusicDemo
+if (Boolean.valueOf(appModuleMusicDemo)) {
+    apply plugin: 'com.android.application'
+} else {
+    apply plugin: 'com.android.library'
+}
 
 android {
     compileSdkVersion 24
@@ -9,6 +14,10 @@ android {
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
+        ndk {
+            abiFilters "armeabi", "x86"
+        }
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -17,6 +26,26 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    sourceSets{
+        main {
+            if (Boolean.valueOf(appModuleMusicDemo)) {
+                manifest.srcFile 'app/AndroidManifest.xml'
+                java.srcDirs = ['src/main/java','app/java']
+                resources.srcDirs = ['src/main/resources','app/resources']
+                aidl.srcDirs = ['src/main/aidl','app/aidl']
+                renderscript.srcDirs = ['src/main/rs','app/rs']
+                res.srcDirs = ['src/main/res','app/res']
+                assets.srcDirs = ['src/main/assets','app/assets']
+                jniLibs.srcDirs = ['src/main/jniLibs','app/jniLibs']
+            } else {
+                manifest.srcFile 'src/main/AndroidManifest.xml'
+                java {
+                    //排除java/debug文件夹下的所有文件
+                    exclude '*debug'
+                }
+            }
         }
     }
 }
@@ -29,4 +58,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.2.1'
     testCompile 'junit:junit:4.12'
     compile project(':macore')
+    annotationProcessor rootProject.ext.dependencies["butterknife_compiler"]
 }

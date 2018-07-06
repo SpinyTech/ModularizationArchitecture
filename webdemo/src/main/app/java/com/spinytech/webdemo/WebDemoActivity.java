@@ -1,7 +1,7 @@
 package com.spinytech.webdemo;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -11,7 +11,7 @@ import com.spinytech.macore.MaApplication;
 import com.spinytech.macore.router.LocalRouter;
 import com.spinytech.macore.router.RouterRequest;
 
-public class WebActivity extends AppCompatActivity {
+public class WebDemoActivity extends Activity {
 
     private WebView mContentWv;
 
@@ -32,8 +32,8 @@ public class WebActivity extends AppCompatActivity {
 
 
     public void dispatchAction(String url) {
-        if (url.indexOf("yourprotocol://") >= 0) {
-            String command = url.substring("yourprotocol://".length());
+        if (url.indexOf("your_protocol://") >= 0) {
+            String command = url.substring("your_protocol://".length());
             try {
                 LocalRouter.getInstance(MaApplication.getMaApplication()).route(this, new RouterRequest.Builder(this).url(command).build());
             } catch (Exception e) {
@@ -45,7 +45,7 @@ public class WebActivity extends AppCompatActivity {
     class MyWebViewClient extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            if (!TextUtils.isEmpty(url) && url.startsWith("yourprotocol://")) {
+            if (!TextUtils.isEmpty(url) && url.startsWith("your_protocol://")) {
                 dispatchAction(url);
             } else {
                 mContentWv.loadUrl(url);

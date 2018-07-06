@@ -1,0 +1,100 @@
+/*全局配置信息及第三方依赖统一管理*/
+ext {
+
+    appModuleMusicDemo = project.hasProperty("appModuleMusicDemo") ? project.property("appModuleMusicDemo").equals("1").toString() : false
+    appModulePicDemo =   project.hasProperty("appModulePicDemo") ? project.property("appModulePicDemo").equals("1").toString() : false
+    appModuleWebDemo =   project.hasProperty("appModuleWebDemo") ? project.property("appModuleWebDemo").equals("1").toString() : false
+
+
+    android = [compileSdkVersion       : 27,
+               buildToolsVersion       : '27.0.3',
+               minSdkVersion           : 17,
+               targetSdkVersion        : 23,
+               versionCode             : 1,
+               versionName             : "1.0.0",
+               applicationId           : "com.example.tome.framedemomo2",
+
+               androidSupportSdkVersion: "27.0.2"
+
+    ]
+
+    dependencies = ["appcompat_v7"                   : "com.android.support:appcompat-v7:${android["androidSupportSdkVersion"]}",
+                    "constraint_layout"              : 'com.android.support.constraint:constraint-layout:1.1.1',
+                    "runner"                         : 'com.android.support.test:runner:1.0.1',
+                    "espresso_core"                  : 'com.android.support.test.espresso:espresso-core:3.0.1',
+                    "junit"                          : 'junit:junit:4.12',
+                    "support_annotations"            : 'com.android.support:support-annotations:24.0.0',
+                    "design"                         : "com.android.support:design:${android["androidSupportSdkVersion"]}",
+                    "support-v4"                     : "com.android.support:support-v4:${android["androidSupportSdkVersion"]}",
+                    "cardview-v7"                    : "com.android.support:cardview-v7:${android["androidSupportSdkVersion"]}",
+                    "recyclerview-v7"                : "com.android.support:recyclerview-v7:${android["androidSupportSdkVersion"]}",
+
+                    //方法数超过65535解决方法64K MultiDex分包方法
+                    "multidex"                       : 'com.android.support:multidex:1.0.2',
+
+                    //路由
+                    "arouter_api"                    : 'com.alibaba:arouter-api:1.2.4',
+                    "arouter_compiler"               : 'com.alibaba:arouter-compiler:1.1.4',
+                    "arouter_annotation"             : 'com.alibaba:arouter-annotation:1.0.4',
+
+                    //黄油刀
+                    "butterknife_compiler"           : 'com.jakewharton:butterknife-compiler:8.4.0',
+                    "butterknife"                    : 'com.jakewharton:butterknife:8.4.0',
+
+                    //网络
+                    //retrofit2包含okhttp
+                    //"okhttp3"                       : 'com.squareup.okhttp3:okhttp:3.9.0',
+                    "retrofit2"                      : 'com.squareup.retrofit2:retrofit:2.3.0',
+                    "converter-gson"                 : 'com.squareup.retrofit2:converter-gson:2.3.0',
+                    "adapter-rxjava2"                : 'com.squareup.retrofit2:adapter-rxjava2:2.3.0',
+                    "rxjava2:rxandroid"              : 'io.reactivex.rxjava2:rxandroid:2.0.1',
+                    "rxjava2"                        : 'io.reactivex.rxjava2:rxjava:2.1.5',
+                    //日志拦截器
+                    "logging-interceptor"            : 'com.squareup.okhttp3:logging-interceptor:3.4.1',
+                    //暂时没用上
+                    "rxbinding2"                     : 'com.jakewharton.rxbinding2:rxbinding:2.1.0',
+                    //日志
+                    "logger"                         : 'com.orhanobut:logger:2.1.1',
+                    //图片
+                    "glide"                          : 'com.github.bumptech.glide:glide:4.5.0',
+                    "glide:okhttp3"                  : 'com.github.bumptech.glide:okhttp3-integration:4.5.0',
+                    //图片选择器
+                    "PictureSelector"                : 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.3',
+                    //图片缩放
+                    "photoview"                      : 'com.github.chrisbanes.photoview:library:1.2.4',
+                    //时间,地址,条件选择器
+                    "pickerView"                     : 'com.contrarywind:Android-PickerView:3.2.7',
+                    //SmartRefreshLayout
+                    "smartRefreshLayout"             : 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.5.1',
+                    "SmartRefreshHeader"             : 'com.scwang.smartrefresh:SmartRefreshHeader:1.0.5.1',
+                    //banner
+                    "banner"                         : 'com.youth.banner:banner:1.4.10',
+                    //eventbus
+                    "eventbus"                       : 'org.greenrobot:eventbus:3.0.0',
+                    //baseRecyclerViewAdapterHelper
+                    "baseRecyclerViewAdapterHelper"  : 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.22',
+                    //Bugly集成
+                    "bugly"                          : 'com.tencent.bugly:crashreport_upgrade:latest.release',
+                    //仿ios进度条
+                    // "kprogresshud"                   : 'com.kaopiz:kprogresshud:1.1.0',
+                    //6.0权限管理
+                    "permissionsdispatcher"          : 'com.github.hotchemi:permissionsdispatcher:3.0.1',
+                    "permissionsdispatcher_processor": 'com.github.hotchemi:permissionsdispatcher-processor:3.0.1',
+                    //dagger 暂时没用
+                    "dagger"                         : 'com.google.dagger:dagger:2.0.2',
+                    "dagger-compiler"                : 'com.google.dagger:dagger-compiler:2.0.2',
+                    "javax-annotation"               : 'org.glassfish:javax.annotation:10.0-b28',
+                    //greendao
+                    "greendao"                       : 'org.greenrobot:greendao:3.2.2',
+                    //Android屏幕适配
+                    "autolayout"                     : 'com.zhy:autolayout:1.4.5',
+                    //安卓调试神器-Stetho
+                    "stetho"                         : 'com.facebook.stetho:stetho:1.5.0',
+                    "stetho-okhttp3"                 : 'com.facebook.stetho:stetho-okhttp3:1.5.0',
+                    // 仿ios弹出对话窗体
+                    "alertview"                      : 'com.bigkoo:alertview:1.0.3',
+                    //bugly sdk
+                    "tencent-bugly"                  : 'com.tencent.bugly:crashreport_upgrade:latest.release',
+                    //节操播放器
+                    "jiecao"                         : 'fm.jiecao:jiecaovideoplayer:5.7',]
+}

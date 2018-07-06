@@ -1,1 +1,16 @@
-include ':macore', ':musicdemo', ':maindemo', ':picdemo', ':webdemo'
+// core
+include ':macore'
+
+// base-lib
+
+// module
+include ':musicdemo'
+
+// module
+include ':picdemo'
+
+// module
+include ':webdemo'
+
+// app
+include ':maindemo'

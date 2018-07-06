@@ -32,12 +32,14 @@ public abstract class MaApplication extends Application {
     @CallSuper
     @Override
     public void onCreate() {
+        // wait for debugger for muti process
+        // android.os.Debug.waitForDebugger();
         super.onCreate();
         sInstance = this;
         Logger.d(TAG,"Application onCreate start: "+System.currentTimeMillis());
         init();
         startWideRouter();
-        initializeLogic();
+        registerAllApplicationLogic();
         dispatchLogic();
         instantiateLogic();
 
@@ -65,9 +67,9 @@ public abstract class MaApplication extends Application {
         }
     }
 
-    public abstract void initializeAllProcessRouter();
+    public abstract void registerAllProcessRouter();
 
-    protected abstract void initializeLogic();
+    protected abstract void registerAllApplicationLogic();
 
     public abstract boolean needMultipleProcess();
 
