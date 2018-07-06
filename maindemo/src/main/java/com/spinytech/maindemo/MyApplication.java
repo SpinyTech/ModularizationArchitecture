@@ -1,31 +1,59 @@
 package com.spinytech.maindemo;
 
+import android.util.Pair;
+
 import com.spinytech.macore.MaApplication;
+import com.spinytech.macore.multiprocess.BaseApplicationLogic;
+import com.spinytech.macore.router.LocalRouterConnectService;
 import com.spinytech.macore.router.WideRouter;
-import com.spinytech.musicdemo.MusicApplicationLogic;
-import com.spinytech.musicdemo.MusicRouterConnectService;
-import com.spinytech.picdemo.PicApplicationLogic;
-import com.spinytech.picdemo.PicRouterConnectService;
-import com.spinytech.webdemo.WebApplicationLogic;
+
+import java.util.LinkedList;
 
 /**
  * Created by wanglei on 2016/11/29.
  */
 
 public class MyApplication extends MaApplication {
+    public static LinkedList<Pair<String,String>> applicationLogic;
+    public static LinkedList<Pair<String,String>> allProcessRouter;
+
+    static {
+        applicationLogic = new LinkedList<>();
+        applicationLogic.add(new Pair<String, String>("com.spinytech.maindemo", "com.spinytech.maindemo.MainApplicationLogic"));
+        applicationLogic.add(new Pair<String, String>("com.spinytech.maindemo", "com.spinytech.webdemo.WebApplicationLogic"));
+        applicationLogic.add(new Pair<String, String>("com.spinytech.maindemo:music", "com.spinytech.musicdemo.MusicApplicationLogic"));
+        applicationLogic.add(new Pair<String, String>("com.spinytech.maindemo:pic", "com.spinytech.picdemo.PicApplicationLogic"));
+
+
+        allProcessRouter = new LinkedList<>();
+        allProcessRouter.add(new Pair<String, String>("com.spinytech.maindemo", "com.spinytech.maindemo.MainRouterConnectService"));
+        allProcessRouter.add(new Pair<String, String>("com.spinytech.maindemo:music", "com.spinytech.musicdemo.MusicRouterConnectService"));
+        allProcessRouter.add(new Pair<String, String>("com.spinytech.maindemo:pic", "com.spinytech.picdemo.PicRouterConnectService"));
+
+    }
     @Override
-    public void initializeAllProcessRouter() {
-        WideRouter.registerLocalRouter("com.spinytech.maindemo",MainRouterConnectService.class);
-        WideRouter.registerLocalRouter("com.spinytech.maindemo:music",MusicRouterConnectService.class);
-        WideRouter.registerLocalRouter("com.spinytech.maindemo:pic",PicRouterConnectService.class);
+    public void registerAllProcessRouter() {
+        for (Pair<String, String> processRouter : allProcessRouter) {
+            try {
+                Class<? extends LocalRouterConnectService> localRouterClass = (Class<? extends LocalRouterConnectService>) Class.forName(processRouter.second);
+                WideRouter.registerLocalRouter(processRouter.first,localRouterClass);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     @Override
-    protected void initializeLogic() {
-        registerApplicationLogic("com.spinytech.maindemo",999, MainApplicationLogic.class);
-        registerApplicationLogic("com.spinytech.maindemo",998, WebApplicationLogic.class);
-        registerApplicationLogic("com.spinytech.maindemo:music",999, MusicApplicationLogic.class);
-        registerApplicationLogic("com.spinytech.maindemo:pic",999, PicApplicationLogic.class);
+    protected void registerAllApplicationLogic() {
+        for (Pair<String, String> processLogic : applicationLogic) {
+            try {
+                Class<? extends BaseApplicationLogic> applicationLogicClass = (Class<? extends BaseApplicationLogic>) Class.forName(processLogic.second);
+                registerApplicationLogic(processLogic.first, 998, applicationLogicClass);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override

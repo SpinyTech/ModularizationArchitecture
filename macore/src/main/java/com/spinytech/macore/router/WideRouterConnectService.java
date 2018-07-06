@@ -49,7 +49,7 @@ public final class WideRouterConnectService extends Service {
             boolean hasRegistered = WideRouter.getInstance(MaApplication.getMaApplication()).checkLocalRouterHasRegistered(domain);
             if (!hasRegistered) {
                 Logger.e(TAG, "Bind error: The local router of process " + domain + " is not bidirectional." +
-                        "\nPlease create a Service extend LocalRouterConnectService then register it in AndroidManifest.xml and the initializeAllProcessRouter method of MaApplication." +
+                        "\nPlease create a Service extend LocalRouterConnectService then register it in AndroidManifest.xml and the registerAllProcessRouter method of MaApplication." +
                         "\nFor example:" +
                         "\n<service android:name=\"XXXConnectService\" android:process=\"your process name\"/>" +
                         "\nWideRouter.registerLocalRouter(\"your process name\",XXXConnectService.class);");

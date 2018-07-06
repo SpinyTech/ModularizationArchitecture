@@ -15,6 +15,6 @@ public final class WideRouterApplicationLogic extends BaseApplicationLogic {
 
     protected void initRouter() {
         WideRouter.getInstance(mApplication);
-        mApplication.initializeAllProcessRouter();
+        mApplication.registerAllProcessRouter();
     }
 }
